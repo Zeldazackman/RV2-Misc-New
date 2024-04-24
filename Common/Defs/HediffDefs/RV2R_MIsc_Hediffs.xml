@@ -2,6 +2,20 @@
 <Defs>
  
   <HediffDef>
+    <defName>RV2R_LightGentialSanityPreserver</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>LGSP</label>
+    <description>PawnMorpher has fucked me for the last time.</description>
+    <initialSeverity>1.00</initialSeverity>
+    <maxSeverity>1.00</maxSeverity>
+    <minSeverity>1.00</minSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <priceImpact>false</priceImpact>
+    <hediffClass>RV2R_RutsStuff.Hediff_LGSP</hediffClass>
+  </HediffDef>
+  
+  <HediffDef>
     <defName>RV2R_EndoRecovery</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>endo sickness</label>
