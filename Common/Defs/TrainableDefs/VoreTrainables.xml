@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <TrainableDef>
     <defName>PlayVore</defName>
     <label>play-predding</label>
-    <description>Encourage this animal to occasionaly endo-vore your colonists and animals.</description>
+    <description>The animal can be encouraged to occasionaly endo-vore your colonists and animals.</description>
     <icon>UI/Icons/Trainables/PlayPredator</icon>
     <listPriority>1900</listPriority>
     <difficulty>50</difficulty>
@@ -15,7 +15,7 @@
   <TrainableDef>
     <defName>EnemyVore</defName>
     <label>predation</label>
-    <description>Train this animal to devour nearby downed hostiles.</description>
+    <description>The animal can be trained to devour nearby downed hostiles that you have designated.</description>
     <icon>UI/Icons/Trainables/Predator</icon>
     <listPriority>700</listPriority>
     <difficulty>150</difficulty>
@@ -30,7 +30,7 @@
   <TrainableDef>
     <defName>HealVore</defName>
     <label>endo rescue</label>
-    <description>Train this animal to heal vore nearby downed colonists and friendlies. Requires analeptic enzymes.</description>
+    <description>The animal can be trained to heal-vore nearby colonists and friendlies when they are wounded. No effect if the animal cannot use the Heal vore goal.</description>
     <icon>UI/Icons/Trainables/HealPredator</icon>
     <listPriority>500</listPriority>
     <difficulty>250</difficulty>
