@@ -17,4 +17,21 @@
 	</value>
   </Operation>
   
+  <Operation Class="PatchOperationAdd">
+    <xpath>/Defs/ThinkTreeDef[defName="Animal"]/thinkRoot/subNodes</xpath>
+      <order>Prepend</order>
+        <value>
+          <li Class="RV2R_RutsStuff.ThinkNode_ChancePerHour_GutLovin">
+			  <subNodes>
+			    <li Class="ThinkNode_Tagger">
+			      <tagToGive>SatisfyingNeeds</tagToGive>
+			      <subNodes>
+				    <li Class="RV2R_RutsStuff.JobGiver_DoGutLovin" />
+				   </subNodes>
+			    </li>
+			  </subNodes>             
+			</li>
+		  </value>
+  </Operation>
+	
 </Patch>
