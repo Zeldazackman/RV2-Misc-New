@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationSequence">
+		<operations>
+			<li Class="PatchOperationInsert">
+				<order>Append</order>
+				<xpath>/Defs/DesignationCategoryDef[defName="Orders"]/specialDesignatorClasses/li[13]</xpath>
+				<value>
+					<li>RV2R_RutsStuff.Designator_Devour</li>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+</Patch>
