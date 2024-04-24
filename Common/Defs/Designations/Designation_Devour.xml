@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <DesignationDef>
+    <defName>RV2R_Devour</defName>
+    <texturePath>UI/Designators/DevourDesg</texturePath>
+    <targetType>Thing</targetType>
+  </DesignationDef>
+  
+</Defs>
