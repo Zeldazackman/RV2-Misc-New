@@ -14,7 +14,7 @@ namespace RV2R_RutsStuff
     {
         private static bool CanFodder(Pawn pawn)
         {
-            if (pawn.IsColonistPlayerControlled)
+            if (pawn.Faction.IsPlayer && RV2R_Utilities.IsSapient(pawn))
                 return true;
             if (!pawn.Name.Numerical && RV2_Rut_Settings.rutsStuff.FodderNamedAllowed)
                 return true;
@@ -31,7 +31,7 @@ namespace RV2R_RutsStuff
         [HarmonyPostfix]
         public static void InterceptGetFodder(ref Job __result, Pawn pawn)
         {
-            if (pawn.Faction == null || !pawn.Faction.IsPlayer)
+            if (!pawn.Faction.IsPlayer)
                 return;
 
             if (!pawn.CanBePredator(out string outText))
@@ -114,9 +114,15 @@ namespace RV2R_RutsStuff
                     };
                     bool prisonCheck(Thing t)
                     {
+#if v1_4
                         Pawn target = (Pawn)t;
                         return target.IsPrisonerInPrisonCell() && target.guest.interactionMode == RV2R_Common.Fodder
                         ;
+#else
+                        Pawn target = (Pawn)t;
+                        return target.IsPrisonerInPrisonCell() && target.guest.ExclusiveInteractionMode == RV2R_Common.Fodder
+                        ;
+#endif
                     };
                     bool animalCheck(Thing t)
                     {
@@ -139,7 +145,7 @@ namespace RV2R_RutsStuff
                         ;
                     };
 
-                    List<Pawn> nearPawns = pawn.Map.mapPawns.AllPawnsSpawned.FindAll((Pawn p) => p != pawn
+                    List<Pawn> nearPawns = pawn.Map.mapPawns.AllPawns.FindAll((Pawn p) => p != pawn
                                                                                               && baseCheck(p)
                                                                                               && (prisonCheck(p)
                                                                                                || ((pawn.IsColonistPlayerControlled || RV2_Rut_Settings.rutsStuff.FodderAnimalsFull)

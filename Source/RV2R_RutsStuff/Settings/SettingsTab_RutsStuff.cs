@@ -18,11 +18,11 @@ namespace RV2R_RutsStuff
         }
 
         public override SettingsContainer AssociatedContainer => RV2_Rut_Settings.rutsStuff;
-        private SettingsContainer_RutsStuff rutsStuff => (SettingsContainer_RutsStuff)this.AssociatedContainer;
+        private SettingsContainer_RutsStuff RutsStuff => (SettingsContainer_RutsStuff)this.AssociatedContainer;
 
         public override void FillRect(Rect inRect)
         {
-            this.rutsStuff.FillRect(inRect);
+            this.RutsStuff.FillRect(inRect);
         }
     }
 }

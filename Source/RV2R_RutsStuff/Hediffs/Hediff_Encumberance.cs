@@ -13,7 +13,7 @@ namespace RV2R_RutsStuff
         public override void Tick()
         {
             base.Tick();
-            if (ageTicks % 500 == 0)
+            if (ageTicks % 250 == 0)
             {
                 Severity = TickSeverity(pawn);
                 pawn.health.Notify_HediffChanged(this);
@@ -24,8 +24,6 @@ namespace RV2R_RutsStuff
         {
             try
             {
-                if (!pawn.SpawnedOrAnyParentSpawned)
-                    return 0f;
                 if (RV2_Rut_Settings.rutsStuff.EncumberanceModifier <= 0.0f)
                     return 0f;
                 if (!pawn.IsActivePredator())

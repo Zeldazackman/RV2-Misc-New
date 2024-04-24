@@ -14,12 +14,19 @@ namespace RV2R_RutsStuff
             if (RV2_Rut_Settings.rutsStuff.GutLovinChance <= 0f)
                 return -1f;
 
-            if (pawn.ageTracker.AgeBiologicalYearsFloat < pawn.ageTracker.AdultMinAge
-             && pawn.ageTracker.AgeBiologicalYears < 18f)
+            if (!(pawn.ageTracker.AgeBiologicalYears > 18f || pawn.ageTracker.AgeBiologicalYearsFloat > pawn.ageTracker.AdultMinAge))
                 return -1f;
 
-            if (pawn.CurrentBed() == null
-             || !pawn.IsActivePredator())
+            if (RestUtility.Awake(pawn))
+                return -1f;
+
+            if (!pawn.IsActivePredator())
+                return -1f;
+
+            if (!RV2R_Utilities.IsSapient(pawn))
+                return -1f;
+
+            if (!pawn.IsHumanoid() && !RV2_Rut_Settings.rutsStuff.GutLovinSapients)
                 return -1f;
 
             float drive = 1f;
@@ -36,13 +43,13 @@ namespace RV2R_RutsStuff
                     pawn.LabelShort,
                     " gut loves every ",
                     ((24f/RV2_Rut_Settings.rutsStuff.GutLovinChance) / drive / ThinkNode_ChancePerHour_GutLovin.LovinMtbSinglePawnFactor(pawn)).ToString(),
-                    " h/a ((36/",
+                    " h/a ((36h/",
                     RV2_Rut_Settings.rutsStuff.GutLovinChance.ToString(),
-                    ")/",
+                    "(chance mod))/",
                     drive.ToString(),
-                    "/",
+                    "(pred drive)/",
                     ThinkNode_ChancePerHour_GutLovin.LovinMtbSinglePawnFactor(pawn).ToString(),
-                    ")"
+                    "(lovin factor))"
                 }), "Gutlovin");
                 return (36f / RV2_Rut_Settings.rutsStuff.GutLovinChance) / drive / ThinkNode_ChancePerHour_GutLovin.LovinMtbSinglePawnFactor(pawn);
             }

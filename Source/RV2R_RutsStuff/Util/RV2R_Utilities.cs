@@ -16,6 +16,10 @@ namespace RV2R_RutsStuff
 
             if (pawn.GetLord()?.LordJob is LordJob_FormAndSendCaravan || target.GetLord()?.LordJob is LordJob_FormAndSendCaravan)
                 return true;
+            if (pawn.CarriedBy != null || target.CarriedBy != null)
+                return true;
+            if (!pawn.Spawned || !target.Spawned)
+                return true;
 
             if (pawn.Drafted || target.Drafted)
                 return true;
@@ -23,11 +27,10 @@ namespace RV2R_RutsStuff
             if (pawn.IsBurning() || target.IsBurning())
                 return true;
 
-            if (pawn.ShouldBeSlaughtered()
-             || target.ShouldBeSlaughtered())
+            if (pawn.ShouldBeSlaughtered() || target.ShouldBeSlaughtered())
                 return true;
 
-            if (!pawn.IsHumanoid() && pawn.Faction != null && pawn.Faction.IsPlayer)
+            if (!pawn.IsHumanoid() && pawn.Faction.IsPlayer)
                 if (respect && pawn.playerSettings != null && pawn.playerSettings.RespectedMaster != null
                  && ((pawn.playerSettings.followDrafted && pawn.playerSettings.RespectedMaster.Drafted) || (pawn.playerSettings.followFieldwork && pawn.playerSettings.RespectedMaster.mindState.lastJobTag == JobTag.Fieldwork)))
                     return true;
@@ -42,6 +45,19 @@ namespace RV2R_RutsStuff
                     if (!target.IsPrisonerOfColony)
                         return true;
 
+            return false;
+        }
+
+        static public bool IsSapient(Pawn pawn)
+        {
+            if (pawn.IsHumanoid())
+                return true;
+            if (pawn.IsMechanoid())
+                return false;
+            if (pawn.IsColonistPlayerControlled) // Sentiant Animals
+                return true;
+            if (pawn.needs.mood != null) // Pawnmorpher, Kyulen
+                return true;
             return false;
         }
 
@@ -213,9 +229,6 @@ namespace RV2R_RutsStuff
 
         static public bool ShouldBandaid(Pawn pred, Pawn prey) // I'm working on it
         {
-#if v1_3
-            return false;
-#else
             if (pred.genes != null && pred.genes.Xenotype != null)
             {
                 if (pred.genes.xenotypeName == "basic android" || pred.genes.xenotypeName == "awakened android")
@@ -227,7 +240,6 @@ namespace RV2R_RutsStuff
                     return true;
             }
             return false;
-#endif
         }
     }
 }

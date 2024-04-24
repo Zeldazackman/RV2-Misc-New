@@ -99,7 +99,10 @@ namespace RV2R_RutsStuff
                     if (record.StruggleManager.shouldStruggle)
                         record.StruggleManager.shouldStruggle = false;
                     if (RV2R_Utilities.IsColonyHostile(record.Predator, record.Prey) && !record.Prey.IsPrisoner)
-                        record.Prey.guest?.SetGuestStatus(record.Predator.Faction, GuestStatus.Prisoner);
+                        if (!RV2R_Utilities.IsSapient(record.Prey))
+                            record.Prey.SetFaction(null, null);
+                        else
+                            record.Prey.guest?.SetGuestStatus(record.Predator.Faction, GuestStatus.Prisoner);
                 }
             }
             else
@@ -107,16 +110,14 @@ namespace RV2R_RutsStuff
         }
         private static void HandlePets(VoreTrackerRecord record)
         {
-            if (record.Predator.IsHumanoid() && record.Prey.IsHumanoid())
+            if (RV2R_Utilities.IsSapient(record.Predator) && RV2R_Utilities.IsSapient(record.Prey))
             {
-                if (RV2_Rut_Settings.rutsStuff.EndoPetsJoin
-                 && record.Predator.Faction.IsPlayer
-                 && (record.Prey.Faction == null || !record.Prey.Faction.IsPlayer))
+                TaggedString taggedString = "RV2R_Pet".Translate(record.Prey.LabelShort, record.Predator.LabelShort);
+                if (RV2_Rut_Settings.rutsStuff.EndoPetsJoin && record.Predator.Faction.IsPlayer && (record.Prey.Faction == null || !record.Prey.Faction.IsPlayer))
                 {
-                    InteractionWorker_RecruitAttempt.DoRecruit(record.Predator, record.Prey, false);
-                    Messages.Message(new Message("RV2R_PetJoined".Translate(record.Prey.LabelShort, record.Predator.LabelShort), MessageTypeDefOf.PositiveEvent, new LookTargets(record.Prey)), true);
-                } // Needs to be done in this order; the "became pet" message ends up above the "pet joined" message, makes it read better
-                Messages.Message(new Message("RV2R_Pet".Translate(record.Prey.LabelShort, record.Predator.LabelShort), MessageTypeDefOf.PositiveEvent, new LookTargets(record.Prey)), true);
+                    taggedString += " " + "RV2R_PetJoined".Translate(record.Prey.LabelShort, record.Predator.LabelShort);
+                }
+                Messages.Message(taggedString, record.Prey, MessageTypeDefOf.PositiveEvent, true);
                 record.Predator.relations.AddDirectRelation(RV2R_Common.PetPred, record.Prey);
                 record.Prey.relations.AddDirectRelation(RV2R_Common.PetPrey, record.Predator);
             }
@@ -174,7 +175,9 @@ namespace RV2R_RutsStuff
             bool validSetup = false;
             Pawn humanoid;
             Pawn animal;
-            if (record.Predator.IsHumanoid())
+            if (RV2R_Utilities.IsSapient(record.Predator) && RV2R_Utilities.IsSapient(record.Prey))
+                return;
+            if (RV2R_Utilities.IsSapient(record.Predator))
             {
                 humanoid = record.Predator;
                 animal = record.Prey;
@@ -206,16 +209,42 @@ namespace RV2R_RutsStuff
         }
         private static void HandleImprisoned(VoreTrackerRecord record)
         {
-#if v1_3
-            if (!record.IsForced)
-                if (record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.ReduceResistance
-                 || record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
-                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= Rand.Range(0.00f, 0.01f));
-#else
+#if v1_4
             if (!record.IsForced && record.Prey.guest.Recruitable)
                 if (record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.ReduceResistance
                  || record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
+                {
+                    float restistanceLower = Rand.Range(0.00f, 0.01f);
+                    if (record.Prey.guest.resistance - restistanceLower <= 0.0f)
+                    {
+                        TaggedString taggedString = "MessagePrisonerResistanceBroken".Translate(record.Prey.LabelShort, record.Predator.LabelShort, record.Predator.Named("WARDEN"), record.Prey.Named("PRISONER"));
+                        if (record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
+                        {
+                            taggedString += " " + "RV2R_RecruitAttempsWillBegin".Translate(record.Predator);
+                        }
+                        Messages.Message(taggedString, record.Prey, MessageTypeDefOf.PositiveEvent, true);
+
+                    }
                     record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= Rand.Range(0.00f, 0.01f));
+                }
+#else
+            if (!record.IsForced && record.Prey.guest.Recruitable)
+                if (record.Prey.guest.ExclusiveInteractionMode == PrisonerInteractionModeDefOf.ReduceResistance
+                 || record.Prey.guest.ExclusiveInteractionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
+                {
+                    float restistanceLower = Rand.Range(0.00f, 0.01f);
+                    if (record.Prey.guest.resistance - restistanceLower <= 0.0f)
+                    {
+                        TaggedString taggedString = "MessagePrisonerResistanceBroken".Translate(record.Prey.LabelShort, record.Predator.LabelShort, record.Predator.Named("WARDEN"), record.Prey.Named("PRISONER"));
+                        if (record.Prey.guest.ExclusiveInteractionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
+                        {
+                            taggedString += " " + "RV2R_RecruitAttempsWillBegin".Translate(record.Predator);
+                        }
+                        Messages.Message(taggedString, record.Prey, MessageTypeDefOf.PositiveEvent, true);
+
+                    }
+                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= Rand.Range(0.00f, 0.01f));
+                }
 #endif
         }
     }

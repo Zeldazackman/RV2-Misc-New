@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.AI;
+using static RV2R_RutsStuff.Patch_RV2R_Settings;
 
 namespace RV2R_RutsStuff
 {
@@ -26,12 +27,15 @@ namespace RV2R_RutsStuff
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return this.pawn.Reserve(this.Bed, this.job, this.Bed.SleepingSlotsCount, 0, null, errorOnFailed);
+            if (this.Bed != null)
+                return this.pawn.Reserve(this.Bed, this.job, this.Bed.SleepingSlotsCount, 0, null, errorOnFailed);
+
+            return true;
         }
 
         public override bool CanBeginNowWhileLyingDown()
         {
-            return JobInBedUtility.InBedOrRestSpotNow(this.pawn, this.job.GetTarget(this.BedInd));
+            return Bed == null || JobInBedUtility.InBedOrRestSpotNow(this.pawn, this.job.GetTarget(this.BedInd));
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
@@ -44,9 +48,7 @@ namespace RV2R_RutsStuff
 
             QuirkManager quirkManager = this.pawn.QuirkManager(false);
 
-            if (quirkManager != null
-             && quirkManager.HasValueModifier("Predator_Libido"))
-                predMod = quirkManager.ModifyValue("Predator_Libido", predMod);
+            predMod = quirkManager?.ModifyValue("Prey_Libido", predMod) ?? 0.66f;
 
             RimVore2.PawnData pawnData = this.pawn.PawnData(false);
             VoreTracker voreTracker = null;
@@ -57,13 +59,13 @@ namespace RV2R_RutsStuff
 
             RV2Log.Message("Predator " + this.pawn.ToString() + " starting gut lovin' ", "Gutlovin");
             foreach (VoreTrackerRecord voreTrackerRecord in voreTracker.VoreTrackerRecords)
-                if (voreTrackerRecord.Prey.IsHumanoid())
+                if (voreTrackerRecord.Prey.IsHumanoid() || (RV2_Rut_Settings.rutsStuff.GutLovinSapients && RV2R_Utilities.IsSapient(voreTrackerRecord.Prey)))
                 {
                     float num = 1f;
                     if (voreTrackerRecord.Prey.QuirkManager(false) != null && voreTrackerRecord.Prey.QuirkManager(false).HasValueModifier("Prey_Libido"))
                         num = voreTrackerRecord.Prey.QuirkManager(false).ModifyValue("Prey_Libido", num);
 
-                    if (num <= .33f && voreTrackerRecord.Prey.relations.OpinionOf(pawn) < 33)
+                    if (num <= .33f && voreTrackerRecord.Prey.relations.OpinionOf(pawn) < 0)
                         unwillingList.Add(voreTrackerRecord.Prey);
                     else
                         willingList.Add(voreTrackerRecord.Prey);
@@ -72,16 +74,22 @@ namespace RV2R_RutsStuff
                     preyMod = Mathf.Max(preyMod, num);
                 }
 
-            this.FailOnDespawnedOrNull(this.BedInd);
-            this.KeepLyingDown(this.BedInd);
-
-            yield return Toils_Bed.ClaimBedIfNonMedical(this.BedInd, TargetIndex.None);
-            yield return Toils_Bed.GotoBed(this.BedInd);
+            if (Bed != null)
+            {
+                this.FailOnDespawnedOrNull(this.BedInd);
+                this.KeepLyingDown(this.BedInd);
+                yield return Toils_Bed.ClaimBedIfNonMedical(this.BedInd, TargetIndex.None);
+                yield return Toils_Bed.GotoBed(this.BedInd);
+            }
+            else
+            {
+                pawn.jobs.jobQueue.EnqueueFirst(JobMaker.MakeJob(JobDefOf.LayDown, pawn.Position));
+            }
 
             this.ticksLeft = (int)(2000f * ((predMod + preyMod) / 2f) * Mathf.Clamp(Rand.Range(0.5f, 1.1f), 0.5f, 1.5f));
             //RV2Log.Message("Gut lovin' lasts " + this.ticksLeft.ToString() + " ticks", "Gutlovin");
 
-            Toil toil = Toils_LayDown.LayDown(this.BedInd, true, false, false, false, PawnPosture.LayingOnGroundNormal);
+            Toil toil = Toils_LayDown.LayDown(this.BedInd, Bed != null, false, false, false, PawnPosture.LayingOnGroundNormal);
             toil.AddPreTickAction(delegate
             {
                 this.ticksLeft--;
@@ -105,7 +113,7 @@ namespace RV2R_RutsStuff
                                     willingness = quirkManager.ModifyValue("Prey_Libido", willingness);
 
                                 if (willingness > 0f)
-                                    voreTrackerRecord2.Prey.needs.joy.CurLevel += 0.01f * willingness;
+                                    voreTrackerRecord2.Prey.needs.joy.CurLevel += 0.015f * willingness;
                             }
                         }
                 }
@@ -113,28 +121,23 @@ namespace RV2R_RutsStuff
 
             toil.AddFinishAction(delegate
             {
-                float predLib = 1f;
-                if (quirkManager != null
-                  && quirkManager.HasValueModifier("Predator_Libido"))
-                    predLib = quirkManager.ModifyValue("Predator_Libido", predLib);
-
                 // Okay, so, to explain: The pred needs a mood boost, and an opinion boost for each prey.
                 // Since getting +120 mood from belly humping 10 prey is maybe a little much,
                 // we handle the mood boost and opinion boosts with seperate thoughts.
 
                 ThoughtDef predThought = RV2R_Common.PredLovin_Normal_Mood;
                 ThoughtDef predOpinion = RV2R_Common.PredLovin_Normal;
-                if (predLib > 1.5f)
+                if (predMod > 1.5f)
                 {
                     predThought = RV2R_Common.PredLovin_VeryGood_Mood;
                     predOpinion = RV2R_Common.PredLovin_VeryGood;
                 }
-                else if (predLib >= 1f)
+                else if (predMod >= 1f)
                 {
                     predThought = RV2R_Common.PredLovin_Good_Mood;
                     predOpinion = RV2R_Common.PredLovin_Good;
                 }
-                else if (predLib <= 0.5f)
+                else if (predMod <= 0.5f)
                 {
                     predThought = RV2R_Common.PreyLovin_Meh; // Meh contains no mood boosts, so doubling up does nothing
                     predOpinion = RV2R_Common.PreyLovin_Meh;
@@ -161,7 +164,8 @@ namespace RV2R_RutsStuff
                 {
                     if (willingList.Contains(voreTrackerRecord2.Prey))
                     {
-                        preyLib = voreTrackerRecord2.Prey.QuirkManager(false)?.ModifyValue("Prey_Libido", preyLib) ?? 1f;
+                        preyLib = 1f;
+                        preyLib = voreTrackerRecord2.Prey.QuirkManager(false)?.ModifyValue("Prey_Libido", preyLib) ?? 0.66f;
                         preyThought = RV2R_Common.PreyLovin_Normal;
                         if (preyLib > 0f)
                             willingList.Add(voreTrackerRecord2.Prey);
@@ -183,7 +187,7 @@ namespace RV2R_RutsStuff
                             if (LovePartnerRelationUtility.ExistingLovePartner(voreTrackerRecord2.Prey, true).GetVoreRecord() != null)
                                 if (LovePartnerRelationUtility.ExistingLovePartner(voreTrackerRecord2.Prey, true).GetVoreRecord().Predator == voreTrackerRecord2.Predator
                                   && LovePartnerRelationUtility.ExistingLovePartner(voreTrackerRecord2.Prey, true).GetVoreRecord().CurrentBodyPart == voreTrackerRecord2.CurrentBodyPart)
-                                    voreTrackerRecord2.Prey.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.GotSomeLovin, pawn, null);
+                                    voreTrackerRecord2.Prey.needs.mood?.thoughts.memories.TryGainMemory(ThoughtDefOf.GotSomeLovin, pawn, null);
                     }
 
                     // For vore rape; only applied if no-one was willing
@@ -193,12 +197,17 @@ namespace RV2R_RutsStuff
                     if (preyThought != null)
                     {
                         thought_Memory = (Thought_Memory)ThoughtMaker.MakeThought(preyThought);
-                        voreTrackerRecord2.Prey.needs.mood?.thoughts.memories.TryGainMemory(thought_Memory, this.pawn);
+                        if (voreTrackerRecord2.Prey.needs.mood != null)
+                        {
+                            voreTrackerRecord2.Prey.needs.mood.thoughts.memories.TryGainMemory(thought_Memory, this.pawn);
+                            RV2Log.Message("Gave prey " + voreTrackerRecord2.Prey.ToString() + " memory " + thought_Memory.ToString(), "Gutlovin");
+                        }
                         thought_MemoryOpinion = (Thought_Memory)ThoughtMaker.MakeThought(predOpinion);
-                        this.pawn.needs.mood?.thoughts.memories.TryGainMemory(thought_MemoryOpinion, voreTrackerRecord2.Prey);
-
-                        RV2Log.Message("Gave prey " + voreTrackerRecord2.Prey.ToString() + " memory " + thought_Memory.ToString(), "Gutlovin");
-                        RV2Log.Message("Gave predator " + this.pawn.ToString() + " opinion memory " + thought_MemoryOpinion.ToString() + "for prey " + thought_MemoryOpinion.otherPawn.LabelShort, "Gutlovin");
+                        if (this.pawn.needs.mood != null)
+                        {
+                            this.pawn.needs.mood.thoughts.memories.TryGainMemory(thought_MemoryOpinion, voreTrackerRecord2.Prey);
+                            RV2Log.Message("Gave predator " + this.pawn.ToString() + " opinion memory " + thought_MemoryOpinion.ToString() + "for prey " + thought_MemoryOpinion.otherPawn.LabelShort, "Gutlovin");
+                        }
                     }
                 }
             });

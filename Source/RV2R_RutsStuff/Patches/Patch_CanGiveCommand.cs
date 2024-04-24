@@ -14,7 +14,7 @@ namespace RV2R_RutsStuff
         {
             if (!pawn.Dead && !pawn.InMentalState && !pawn.Downed && !pawn.IsBurning())
             {
-                if (pawn.IsColonistPlayerControlled)
+                if (RV2R_Utilities.IsSapient(pawn))
                 {
                     __result = true;
                     return;

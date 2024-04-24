@@ -25,9 +25,13 @@ namespace RV2R_RutsStuff
         private BoolSmartSetting insectoidCapture;
         private BoolSmartSetting scariaCapture;
         private BoolSmartSetting endoRecruitment;
+        private BoolSmartSetting devourFriendlies;
+        private BoolSmartSetting devourColonists;
+        private BoolSmartSetting devourColonistsFull;
 
         private BoolSmartSetting preyLovin;
         private FloatSmartSetting gutLovinChance;
+        private BoolSmartSetting gutLovinSapients;
         private BoolSmartSetting gutLovinStands;
         private BoolSmartSetting gutLovinCheats;
         private BoolSmartSetting gutLovinNonCon;
@@ -46,6 +50,7 @@ namespace RV2R_RutsStuff
 
         private FloatSmartSetting playVoreChance;
         private FloatSmartSetting playVoreModifier;
+        private FloatSmartSetting playVoreColonistBias;
         private BoolSmartSetting playVoreIndescriminate;
         private BoolSmartSetting fatalPlayVore;
 
@@ -78,15 +83,20 @@ namespace RV2R_RutsStuff
         public bool InsectoidCapture => this.insectoidCapture.value;
         public bool ScariaCapture => this.scariaCapture.value;
         public bool EndoRecruitment => this.endoRecruitment.value;
+        public bool DevourFriendlies => this.devourFriendlies.value;
+        public bool DevourColonists => this.devourColonists.value;
+        public bool DevourColonistsFull => this.devourColonistsFull.value;
 
         public bool PreyLovin => this.preyLovin.value;
         public float GutLovinChance => this.gutLovinChance.value / 100f;
+        public bool GutLovinSapients => this.gutLovinSapients.value;
         public bool GutLovinStands => this.gutLovinStands.value;
         public bool GutLovinCheats => this.gutLovinCheats.value;
         public bool GutLovinNonCon => this.gutLovinNonCon.value;
 
         public float PlayVoreChance => this.playVoreChance.value;
         public float PlayVoreModifier => this.playVoreModifier.value / 100f;
+        public float PlayVoreColonistBias => this.playVoreColonistBias.value / 100f;
         public bool PlayVoreIndescriminate => this.playVoreIndescriminate.value;
         public bool FatalPlayVore => this.fatalPlayVore.value;
 
@@ -144,6 +154,8 @@ namespace RV2R_RutsStuff
                 this.preyLovin = new BoolSmartSetting("RV2R_Settings_PreyLovin", true, true, "RV2R_Settings_PreyLovin_Tip");
             if (this.gutLovinChance == null || this.gutLovinChance.IsInvalid())
                 this.gutLovinChance = new FloatSmartSetting("RV2R_Settings_GutLovin", 100f, 100f, 0f, 1000f, "RV2R_Settings_GutLovin_Tip", "0", "%");
+            if (this.gutLovinSapients == null || this.gutLovinSapients.IsInvalid())
+                this.gutLovinSapients = new BoolSmartSetting("RV2R_Settings_GutLovinSapient", false, false, "RV2R_Settings_GutLovinSapient_Tip");
             if (this.gutLovinStands == null || this.gutLovinStands.IsInvalid())
                 this.gutLovinStands = new BoolSmartSetting("RV2R_Settings_GutLovinONS", true, true, "RV2R_Settings_GutLovinONS_Tip");
             if (this.gutLovinCheats == null || this.gutLovinCheats.IsInvalid())
@@ -159,11 +171,19 @@ namespace RV2R_RutsStuff
                 this.scariaCapture = new BoolSmartSetting("RV2R_Settings_EndoCapture_Scaria", false, false, "RV2R_Settings_EndoCapture_Scaria_Tip");
             if (this.endoRecruitment == null || this.endoRecruitment.IsInvalid())
                 this.endoRecruitment = new BoolSmartSetting("RV2R_Settings_EndoCapture_Recruitment", false, false, "RV2R_Settings_EndoCapture_Recruitment_Tip");
+            if (this.devourFriendlies == null || this.devourFriendlies.IsInvalid())
+                this.devourFriendlies = new BoolSmartSetting("RV2R_Settings_EndoCaptureDevourFriendlies", false, false, "RV2R_Settings_EndoCaptureDevourFriendlies_Tip");
+            if (this.devourColonists == null || this.devourColonists.IsInvalid())
+                this.devourColonists = new BoolSmartSetting("RV2R_Settings_EndoCaptureDevourColonists", false, false, "RV2R_Settings_EndoCaptureDevourColonists_Tip");
+            if (this.devourColonistsFull == null || this.devourColonistsFull.IsInvalid())
+                this.devourColonistsFull = new BoolSmartSetting("RV2R_Settings_EndoCaptureDevourColonistsFull", false, false, "RV2R_Settings_EndoCaptureDevourColonistsFull_Tip");
 
             if (this.playVoreChance == null || this.playVoreChance.IsInvalid())
                 this.playVoreChance = new FloatSmartSetting("RV2R_Settings_AnimalRandomNomChance", 24f, 24f, 6f, 168f, "RV2R_Settings_AnimalRandomNomChance_Tip", "0.0");
             if (this.playVoreModifier == null || this.playVoreModifier.IsInvalid())
                 this.playVoreModifier = new FloatSmartSetting("RV2R_Settings_AnimalRandomNomChanceModifier", 50f, 50f, 0f, 800f, "RV2R_Settings_AnimalRandomNomChanceModifier_Tip", "0", "%");
+            if (this.playVoreColonistBias == null || this.playVoreColonistBias.IsInvalid())
+                this.playVoreColonistBias = new FloatSmartSetting("RV2R_Settings_AnimalRandomNomColonistModifier", 50f, 50f, 0f, 100f, "RV2R_Settings_AnimalRandomNomColonistModifier_Tip", "0", "%");
             if (this.playVoreIndescriminate == null || this.playVoreIndescriminate.IsInvalid())
                 this.playVoreIndescriminate = new BoolSmartSetting("RV2R_Settings_AnimalRandomNomIndiscriminate", false, false, "RV2R_Settings_AnimalRandomNomIndiscriminate_Tip");
             if (this.fatalPlayVore == null || this.fatalPlayVore.IsInvalid())
@@ -236,14 +256,19 @@ namespace RV2R_RutsStuff
             this.endoCapture = null;
             this.preyLovin = null;
             this.gutLovinChance = null;
+            this.gutLovinSapients = null;
             this.gutLovinStands = null;
             this.gutLovinNonCon = null;
             this.insectoidCapture = null;
             this.scariaCapture = null;
             this.endoRecruitment = null;
+            this.devourFriendlies = null;
+            this.devourColonists = null;
+            this.devourColonistsFull = null;
             this.playVoreChance = null;
             this.playVoreModifier = null;
             this.playVoreIndescriminate = null;
+            this.playVoreColonistBias = null;
             this.fatalPlayVore = null;
             this.fodderChance = null;
             this.fodderNamedAllowed = null;
@@ -296,6 +321,7 @@ namespace RV2R_RutsStuff
             listing_Standard.Gap(12f);
             this.preyLovin.DoSetting(listing_Standard);
             this.gutLovinChance.DoSetting(listing_Standard);
+            this.gutLovinSapients.DoSetting(listing_Standard);
             this.gutLovinStands.DoSetting(listing_Standard);
             this.gutLovinNonCon.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
@@ -305,11 +331,16 @@ namespace RV2R_RutsStuff
             this.insectoidCapture.DoSetting(listing_Standard);
             this.scariaCapture.DoSetting(listing_Standard);
             this.endoRecruitment.DoSetting(listing_Standard);
+            listing_Standard.Gap(8f);
+            this.devourFriendlies.DoSetting(listing_Standard);
+            this.devourColonists.DoSetting(listing_Standard);
+            this.devourColonistsFull.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_AnimalNom_Section".Translate());
             listing_Standard.Gap(12f);
             this.playVoreChance.DoSetting(listing_Standard);
             this.playVoreModifier.DoSetting(listing_Standard);
+            this.playVoreColonistBias.DoSetting(listing_Standard);
             this.playVoreIndescriminate.DoSetting(listing_Standard);
             this.fatalPlayVore.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
@@ -365,13 +396,18 @@ namespace RV2R_RutsStuff
             Scribe_Deep.Look<BoolSmartSetting>(ref this.endoCapture, "endoCapture", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.preyLovin, "preyLovin", new object[0]);
             Scribe_Deep.Look<FloatSmartSetting>(ref this.gutLovinChance, "gutLovinChance", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.gutLovinSapients, "gutLovinSapients", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.gutLovinStands, "gutLovinStands", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.gutLovinNonCon, "gutLovinNonCon", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.insectoidCapture, "insectoidCapture", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.scariaCapture, "scariaCapture", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.endoRecruitment, "endoRecruitment", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.devourFriendlies, "devourFriendlies", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.devourColonists, "devourColonists", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.devourColonistsFull, "devourColonistsFull", new object[0]);
             Scribe_Deep.Look<FloatSmartSetting>(ref this.playVoreChance, "playVoreChance", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.playVoreIndescriminate, "playVoreIndescriminate", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.playVoreColonistBias, "playVoreColonistBias", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.fatalPlayVore, "fatalPlayVore", new object[0]);
             Scribe_Deep.Look<FloatSmartSetting>(ref this.fodderChance, "fodderChance", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.fodderNamedAllowed, "fodderNamedAllowed", new object[0]);

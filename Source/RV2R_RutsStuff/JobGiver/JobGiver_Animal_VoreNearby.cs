@@ -40,7 +40,7 @@ namespace RV2R_RutsStuff
                      && pawn.Position.DistanceTo(bond.Position) < radius
                      && pawn.CanReserve(bond, 1, -1, null, false)
                      && pawn.CanVore(bond, out reason)
-                     && Rand.Chance(0.25f))
+                     && Rand.Chance(0.20f))
                         prey = bond;
                 }
                 if (prey == null)
@@ -56,7 +56,8 @@ namespace RV2R_RutsStuff
                             && !GenAI.EnemyIsNear(pawn, radius)
                             && !RV2R_Utilities.IsBusy(pawn, pawn3)
                             && !RV2R_Utilities.IsColonyHostile(pawn, pawn3)
-                            && pawn.CanVore(pawn3, out reason);
+                            && pawn.CanVore(pawn3, out reason)
+                            && (!pawn.IsColonistPlayerControlled || Rand.Chance(RV2_Rut_Settings.rutsStuff.PlayVoreColonistBias));
                     }
                     prey = (Pawn)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Pawn), PathEndMode.OnCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), this.radius, predicate, null, 0, -1, false, RegionType.Set_Passable, false);
                 }

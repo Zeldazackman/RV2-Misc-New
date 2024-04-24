@@ -12,28 +12,37 @@ namespace RV2R_RutsStuff
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
-            Building_Bed building_Bed = pawn.CurrentBed();
-            if (building_Bed == null
-             || building_Bed.Medical
-             || !pawn.health.capacities.CanBeAwake)
-                return null;
-
             if (!pawn.IsActivePredator())
                 return null;
 
             if (Find.TickManager.TicksGame < pawn.mindState.canLovinTick)
                 return null;
 
-            if (building_Bed.SleepingSlotsCount > 1)
-                using (IEnumerator<Pawn> enumerator = building_Bed.CurOccupants.GetEnumerator())
-                    while (enumerator.MoveNext())
-                        if (enumerator.Current != pawn)
-                            return null;
+            if (!pawn.health.capacities.CanBeAwake)
+                return null;
+
+            Building_Bed building_Bed = pawn.CurrentBed();
+            if (building_Bed != null)
+            {
+                if (building_Bed.Medical)
+                    return null;
+                if (building_Bed.SleepingSlotsCount > 1)
+                    using (IEnumerator<Pawn> enumerator = building_Bed.CurOccupants.GetEnumerator())
+                        while (enumerator.MoveNext())
+                            if (enumerator.Current != pawn)
+                                return null;
+            }
+            else
+                if (RestUtility.Awake(pawn))
+                return null;
+
+            PawnData pawnData = pawn.PawnData(false);
+            if (pawnData == null)
+                return null;
 
             float predLib = 1f;
             float preyLib = 0f;
             int bestOp = -100;
-            float tempPreyLib = 1f;
 
             if (pawn.QuirkManager(false).HasValueModifier("Predator_Libido"))
                 predLib = pawn.QuirkManager(false).ModifyValue("Predator_Libido", predLib);
@@ -47,59 +56,59 @@ namespace RV2R_RutsStuff
             bool noAttraction = true;
 
             IEnumerable<Pawn> familyByBlood = pawn.relations.FamilyByBlood;
-            if (pawn.IsActivePredator())
-            {
-                PawnData pawnData = pawn.PawnData(false);
-                if (pawnData != null)
+            VoreTracker voreTracker = pawnData.VoreTracker;
+            if (voreTracker != null)
+                foreach (VoreTrackerRecord voreTrackerRecord in voreTracker.VoreTrackerRecords)
                 {
-                    VoreTracker voreTracker = pawnData.VoreTracker;
-                    if (voreTracker != null)
-                        foreach (VoreTrackerRecord voreTrackerRecord in voreTracker.VoreTrackerRecords)
+                    float tempPreyLib = 1f;
+                    Pawn preyPawn = voreTrackerRecord.Prey;
+                    foreach (Pawn pawn2 in familyByBlood)
+                        if (preyPawn == pawn2
+                         && !LovePartnerRelationUtility.LovePartnerRelationExists(voreTrackerRecord.Prey, voreTrackerRecord.Predator))
                         {
-                            Pawn preyPawn = voreTrackerRecord.Prey;
-                            foreach (Pawn pawn2 in familyByBlood)
-                                if (preyPawn == pawn2
-                                 && !LovePartnerRelationUtility.LovePartnerRelationExists(voreTrackerRecord.Prey, voreTrackerRecord.Predator))
-                                {
-                                    loverPresnt = false;
-                                    predLib = 0f;
-                                    break;
-                                }
-                            
-                            if (voreTrackerRecord.Prey.IsHumanoid())
-                                noHumanlikes = false;
-
-                            if (voreTrackerRecord.Prey.QuirkManager(false).HasValueModifier("Prey_Libido"))
-                                tempPreyLib = voreTrackerRecord.Prey.QuirkManager(false).ModifyValue("Prey_Libido", tempPreyLib);
-
-                            if (noAttraction
-                             && (pawn.gender != preyPawn.gender || pawn.story.traits.HasTrait(TraitDefOf.Gay)) || pawn.story.traits.HasTrait(TraitDefOf.Bisexual)
-                             || predLib >= 1.5f)
-                                noAttraction = false;
-
-                            if (tempPreyLib < 1.5f
-                             && preyPawn.gender == pawn.gender && !preyPawn.story.traits.HasTrait(TraitDefOf.Gay)
-                             && !preyPawn.story.traits.HasTrait(TraitDefOf.Bisexual))
-                                tempPreyLib /= 2f;
-
-                            bestOp = Math.Max(bestOp, pawn.relations.OpinionOf(voreTrackerRecord.Prey));
-
-                            preyLib = Math.Max(preyLib, tempPreyLib);  // Use the vornyest prey's score
-
-                            if (LovePartnerRelationUtility.LovePartnerRelationExists(voreTrackerRecord.Prey, voreTrackerRecord.Predator))
-                                loverPresnt = true;
-
-                            canLove = (preyLib > 0 || canLove);
+                            loverPresnt = false;
+                            predLib = 0f;
+                            break;
                         }
+
+                    if (preyPawn.IsColonistPlayerControlled || preyPawn.needs.mood != null)
+                        if (!pawn.IsHumanoid() && RV2_Rut_Settings.rutsStuff.GutLovinSapients)
+                            noHumanlikes = false;
+
+                    if (preyPawn.QuirkManager(false).HasValueModifier("Prey_Libido"))
+                        tempPreyLib = preyPawn.QuirkManager(false).ModifyValue("Prey_Libido", tempPreyLib);
+
+                    if (pawn.IsHumanoid() || preyPawn.IsHumanoid())
+                    {
+                        if (noAttraction
+                         && (pawn.story == null
+                         || (pawn.gender != preyPawn.gender || (pawn.story.traits.HasTrait(TraitDefOf.Gay) || pawn.story.traits.HasTrait(TraitDefOf.Bisexual)))
+                         || predLib >= 1.5f))
+                            noAttraction = false;
+
+                        if (tempPreyLib < 1.5f
+                         && pawn.story != null
+                         && preyPawn.gender == pawn.gender && !preyPawn.story.traits.HasTrait(TraitDefOf.Gay)
+                         && !preyPawn.story.traits.HasTrait(TraitDefOf.Bisexual))
+                            tempPreyLib /= 2f;
+                    }
+
+                    bestOp = Math.Max(bestOp, pawn.relations.OpinionOf(voreTrackerRecord.Prey));
+
+                    preyLib = Math.Max(preyLib, tempPreyLib);  // Use the vornyest prey's score
+
+                    if (LovePartnerRelationUtility.LovePartnerRelationExists(voreTrackerRecord.Prey, voreTrackerRecord.Predator) || RV2_Rut_Settings.rutsStuff.GutLovinCheats)
+                        loverPresnt = true;
+
+                    canLove = (preyLib > 0 || canLove);
                 }
-            }
             if (noAttraction)
                 predLib /= 2f;
 
             bool pyscho = RV2_Rut_Settings.rutsStuff.GutLovinNonCon
-                      && !pawn.story.traits.HasTrait(TraitDefOf.Kind)
+                      && (!pawn.story.traits.HasTrait(TraitDefOf.Kind)
                       && (pawn.story.traits.HasTrait(TraitDefOf.Psychopath)
-                       || bestOp <= -10);
+                       || bestOp <= -10));
 
             if (noHumanlikes)
                 return null;        // If we're not being a barn

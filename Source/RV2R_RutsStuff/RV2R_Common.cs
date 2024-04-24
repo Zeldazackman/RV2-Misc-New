@@ -34,5 +34,10 @@ namespace RV2R_RutsStuff
         public static readonly VoreGoalDef Drain = DefDatabase<VoreGoalDef>.GetNamedSilentFail("RV2R_Drain");
 
         public static readonly PrisonerInteractionModeDef Fodder = DefDatabase<PrisonerInteractionModeDef>.GetNamedSilentFail("RV2R_Fodder");
+
+        public static readonly DesignationDef Devour = DefDatabase<DesignationDef>.GetNamedSilentFail("RV2R_Devour");
+
+        public static readonly HediffDef LGSanity = HediffDef.Named("RV2R_LightGentialSanityPreserver");
+
     }
 }

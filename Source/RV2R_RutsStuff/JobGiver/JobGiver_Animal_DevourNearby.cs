@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI;
-using static RV2R_RutsStuff.Patch_RV2R_Settings;
 
 namespace RV2R_RutsStuff
 {
@@ -22,7 +21,7 @@ namespace RV2R_RutsStuff
 
         protected override Job TryGiveJob(Pawn pawn)
         {
-            if (!pawn.CanParticipateInVore(out string reason))
+            if (!pawn.CanParticipateInVore(out string _))
                 return null;
 
             if (GenAI.InDangerousCombat(pawn))
@@ -36,12 +35,12 @@ namespace RV2R_RutsStuff
                 bool predicate(Thing t)
                 {
                     Pawn target = (Pawn)t;
-                    return target.Downed
-                        && pawn.CanVore(target, out reason)
+                    return (target.Downed || !pawn.Faction.HostileTo(target.Faction))
+                        && pawn.CanVore(target, out _)
                         && pawn.CanReserve(target, 1, -1, null, false)
                         && !target.IsMechanoid()
                         && !target.IsForbidden(pawn)
-                        && RV2R_Utilities.IsColonyHostile(pawn, target);
+                        && target.Map.designationManager.DesignationOn(target, RV2R_Common.Devour) != null;
                 }
                 Pawn prey = (Pawn)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Pawn), PathEndMode.OnCell, TraverseParms.For(pawn, Danger.Deadly, TraverseMode.ByPawn, false, false, false), this.radius, predicate, null, 0, -1, false, RegionType.Set_Passable, false);
                 if (prey == null)
@@ -69,15 +68,9 @@ namespace RV2R_RutsStuff
                 }
                 RV2Log.Message("Predator " + pawn.LabelShort + " can't fatal vore " + prey.LabelShort + "; checking for healing instead", true, "Jobs");
 
-                if (!RV2_Rut_Settings.rutsStuff.EndoCapture)
-                    goto predFail;
-                if (prey.IsAnimal() && pawn.Map.designationManager.DesignationOn(prey, DesignationDefOf.Tame) == null)
-                    goto predFailDesg;
-                if ((prey.IsInsectoid() && !prey.IsHumanoid()) // Needs to be set up like this because of Apini; they're made of insect meat
-                 && (!RV2_Rut_Settings.rutsStuff.InsectoidCapture || pawn.Map.designationManager.DesignationOn(prey, DesignationDefOf.Tame) == null))
-                    goto predFailDesg;
-
                 list = new List<VoreGoalDef> { VoreGoalDefOf.Heal };
+                if (prey.Faction.IsPlayer && !prey.health.HasHediffsNeedingTend())
+                    list = DefDatabase<VoreGoalDef>.AllDefsListForReading.Where((VoreGoalDef goal) => !goal.IsLethal).ToList();
                 interaction = VoreInteractionManager.Retrieve(new VoreInteractionRequest(pawn, prey, VoreRole.Predator, true, false, false, null, null, null, null, list)).ValidPaths;
                 if (interaction.EnumerableNullOrEmpty<VorePathDef>())
                 {
@@ -89,16 +82,6 @@ namespace RV2R_RutsStuff
                 voreJob.VorePath = vorePathDef;
                 voreJob.IsForced = true;
                 return voreJob;
-
-            predFail:
-                RV2Log.Message("Predator " + pawn.LabelShort + " can't fatal or heal vore " + prey.LabelShort + ", no predation", true, "Jobs");
-                return null;
-
-            predFailDesg:
-                if (pawn.Map.designationManager.DesignationOn(prey, DesignationDefOf.Tame) == null)
-                    RV2Log.Message("Predator " + pawn.LabelShort + " can't fatal or heal vore " + prey.LabelShort + ", no predation; designate to tame to capture", true, "Jobs");
-
-                return null;
             }
             catch (Exception e)
             {
