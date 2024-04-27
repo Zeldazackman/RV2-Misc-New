@@ -25,11 +25,11 @@ namespace RV2R_RutsStuff
             try
             {
                 if (RV2_Rut_Settings.rutsStuff.EncumberanceModifier <= 0.0f)
-                    return 0f;
+                    return 0.01f;
                 if (!pawn.IsActivePredator())
-                    return 0f;
+                    return 0.01f;
                 if (pawn.PawnData(false) == null)
-                    return 0f;
+                    return 0.01f;
 
                 float quirkMod = pawn.QuirkManager(false)?.CapModOffsetModifierFor(PawnCapacityDefOf.Moving, null) ?? 1f;
 
@@ -47,7 +47,7 @@ namespace RV2R_RutsStuff
             catch (Exception e) 
             {
                 Log.Warning("RV-2R: Something went wrong when getting " + pawn.LabelShort + "'s encumberance: " + e);
-                return 0f;
+                return 0.01f;
             }
         }
 
