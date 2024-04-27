@@ -53,7 +53,7 @@ namespace RV2R_RutsStuff
                  && __instance.Prey.needs.joy != null
                  && (__instance.Prey.QuirkManager(false) == null
                  || __instance.Prey.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Prey, ModifierOperation.Add) >= 0f)
-                 && __instance.Prey.needs.joy.CurLevelPercentage < (__instance.IsForced ? 0.33f : 0.5f))
+                 && __instance.Prey.needs.joy.CurLevelPercentage < (__instance.IsForced ? 0.25f : 0.5f))
                     __instance.Prey.needs.joy.CurLevelPercentage += 0.025f;
 
                 if (RV2_Rut_Settings.rutsStuff.NoBleedOut)
@@ -66,7 +66,7 @@ namespace RV2R_RutsStuff
                 if (RV2_Rut_Settings.rutsStuff.StopBleeding)
                     foreach (Hediff hediff in __instance.Prey.health.hediffSet.hediffs.Where((Hediff diff) => diff.Bleeding))
                     {
-                        hediff.def.injuryProps.bleedRate *= 0.95f;
+                        hediff.def.injuryProps.bleedRate *= 0.975f;
                         __instance.Prey.health.Notify_HediffChanged(hediff);
                     }
 
