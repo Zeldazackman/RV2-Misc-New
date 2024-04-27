@@ -57,10 +57,11 @@ namespace RV2R_RutsStuff
                             && !RV2R_Utilities.IsBusy(pawn, pawn3)
                             && !RV2R_Utilities.IsColonyHostile(pawn, pawn3)
                             && pawn.CanVore(pawn3, out reason)
-                            && (!pawn.IsColonistPlayerControlled || Rand.Chance(RV2_Rut_Settings.rutsStuff.PlayVoreColonistBias));
+                            && (!RV2R_Utilities.IsSapient(pawn3) || Rand.Chance(RV2_Rut_Settings.rutsStuff.PlayVoreColonistBias));
                     }
                     prey = (Pawn)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Pawn), PathEndMode.OnCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), this.radius, predicate, null, 0, -1, false, RegionType.Set_Passable, false);
                 }
+                
                 if (prey == null)
                     return null;
                 List<VoreGoalDef> list = DefDatabase<VoreGoalDef>.AllDefsListForReading.Where((VoreGoalDef goal) => !goal.IsLethal && goal.defName != "Store").ToList();
