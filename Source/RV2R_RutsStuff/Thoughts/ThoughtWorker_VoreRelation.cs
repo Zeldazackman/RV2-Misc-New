@@ -35,15 +35,15 @@ namespace RV2R_RutsStuff
                         break;
 
                     case "RV2R_BondPred":
-                        int strenght = -1;
+                        int strength = -1;
                         for (int i = 0; i < p.relations.DirectRelations.Count; i++)
                         {
                             if (p.relations.DirectRelations[i].def == PawnRelationDefOf.Bond
                              && p.relations.DirectRelations[i].otherPawn.GetVoreRecord()?.Predator == p
                              && !p.relations.DirectRelations[i].otherPawn.GetVoreRecord().VoreGoal.IsLethal)
-                                strenght += 1;
+                                strength += 1;
                         }
-                        return ThoughtState.ActiveAtStage(Math.Min(1, strenght));
+                        return ThoughtState.ActiveAtStage(Math.Min(1, strength));
 
                 }
             }
