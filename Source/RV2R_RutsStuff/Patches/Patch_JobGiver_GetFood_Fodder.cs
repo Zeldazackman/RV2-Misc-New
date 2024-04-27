@@ -31,7 +31,7 @@ namespace RV2R_RutsStuff
         [HarmonyPostfix]
         public static void InterceptGetFodder(ref Job __result, Pawn pawn)
         {
-            if (!pawn.Faction.IsPlayer)
+            if (pawn.Faction == null || !pawn.Faction.IsPlayer)
                 return;
 
             if (!pawn.CanBePredator(out string outText))
@@ -45,17 +45,20 @@ namespace RV2R_RutsStuff
 
             Job job = __result;
 
+            bool desperate = job == null;
+
             try
             {
-                if (job != null
-                 && (job.def != JobDefOf.Ingest || job.def != JobDefOf.TakeFromOtherInventory)
-                 && (job != null && job.GetTarget(TargetIndex.A).Thing is Corpse))
-                    return;
+                if (!desperate)
+                {
+                    if ((job.def != JobDefOf.Ingest || job.def != JobDefOf.TakeFromOtherInventory)
+                     && (job.GetTarget(TargetIndex.A).Thing is Corpse))
+                        return;
 
-                if (job != null
-                 && pawn.needs.food.CurLevelPercentage < 0.10f
-                 && Rand.Chance(0.5f)) // Give up if no-one's saying yes
-                    return;
+                    if (pawn.needs.food.CurLevelPercentage < 0.10f
+                     && Rand.Chance(0.5f)) // Give up if no-one's saying yes
+                        return;
+                }
 
                 List<VoreGoalDef> validGoals = new List<VoreGoalDef>() {
                     VoreGoalDefOf.Digest,
@@ -90,9 +93,9 @@ namespace RV2R_RutsStuff
                     }
                 }
 
-                if (pawn.PreferenceFor(VoreRole.Predator, ModifierOperation.Add) < 0f
+                if (!desperate && (pawn.PreferenceFor(VoreRole.Predator, ModifierOperation.Add) < 0f
                  || (pawn.PreferenceFor(VoreGoalDefOf.Digest, VoreRole.Predator, ModifierOperation.Add) < 0f
-                  && pawn.PreferenceFor(RV2R_Common.Drain, VoreRole.Predator, ModifierOperation.Add) < 0f))
+                  && pawn.PreferenceFor(RV2R_Common.Drain, VoreRole.Predator, ModifierOperation.Add) < 0f)))
                     return;
 
                 if (Rand.Chance(RV2_Rut_Settings.rutsStuff.FodderChance / (pawn.IsColonistPlayerControlled ? (pawn.RaceProps.predator ? 10f : 50f) : 1f)))
@@ -128,7 +131,7 @@ namespace RV2R_RutsStuff
                     {
                         Pawn target = (Pawn)t;
                         return pawn.Position.DistanceTo(target.Position) <= 15f
-                             && target.IsAnimal() && target.Name != null && target.Name.Numerical
+                             && target.IsAnimal() && target.IsColonist && target.Name.Numerical
                              && ((RV2_Rut_Settings.rutsStuff.FodderPenAnimals && target.RaceProps.FenceBlocked)
                               || (RV2_Rut_Settings.rutsStuff.FodderAnimals && (!target.RaceProps.predator || target.BodySize <= pawn.BodySize * 0.65f))
                               || (RV2_Rut_Settings.rutsStuff.FodderPredators && target.RaceProps.predator)
@@ -173,7 +176,7 @@ namespace RV2R_RutsStuff
                     if (prey == null)
                         return;
 
-                    if (job != null && !prey.IsPrisonerInPrisonCell() && !Rand.Chance(RV2_Rut_Settings.rutsStuff.MiscFodderChance))
+                    if (!desperate && prey.IsPrisonerInPrisonCell() && !Rand.Chance(RV2_Rut_Settings.rutsStuff.MiscFodderChance))
                         return;
 
                     RV2Log.Message("Predator " + pawn.LabelShort + " picked " + prey.LabelShort, "Jobs");

@@ -37,7 +37,5 @@ namespace RV2R_RutsStuff
 
         public static readonly DesignationDef Devour = DefDatabase<DesignationDef>.GetNamedSilentFail("RV2R_Devour");
 
-        public static readonly HediffDef LGSanity = HediffDef.Named("RV2R_LightGentialSanityPreserver");
-
     }
 }
