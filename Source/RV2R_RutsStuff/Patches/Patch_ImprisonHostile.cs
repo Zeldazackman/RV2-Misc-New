@@ -26,10 +26,6 @@ namespace RV2R_RutsStuff
                 if (firstHediffOfDef == null)
                     record.Predator.health.AddHediff(RV2R_Common.Encumbrance, null, null, null);
 
-                Hediff LGAnus = record.Predator.health.hediffSet.GetFirstHediffOfDef(DefDatabase<HediffDef>.GetNamedSilentFail("LightGenitals_Anus")) ?? null;
-                if (LGAnus != null)
-                    record.Predator.health.AddHediff(RV2R_Common.LGSanity, null, null, null);
-
                 Hediff grappleHediff = record.Predator.health.hediffSet.GetFirstHediffOfDef(RV2_Common.GrappledHediff, false) ?? null;
 
                 if (record.VoreGoal.IsLethal)
