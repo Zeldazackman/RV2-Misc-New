@@ -32,7 +32,9 @@
 
 		Encumbrance multiplier - Sets how heavy prey are. Setting to 0% effectivly disables all encumbrance.
 
-		Visible "Weighed down" hediff - The "weighted down" that applies the movement reduction can be made invisible, saving space in the health tab.
+		Encumbrance limit - The maximum severity of the "weighed down" hediff. Can be used to prevent total incapacitation or to temporaraly free preds who gulp more than they can chew.
+
+		Visible "Weighed down" hediff - The "weighed down" hediff that applies the movement reduction can be made invisible, saving space in the health tab.
 						It will still affect pawns, and can always be seen by hoving over their Moving capacity in their health tab.
 						This just cleans up the health tab a bit - it can get crowded, in the mid-endgame.
 
@@ -42,8 +44,8 @@
 
 	Endo Stuff -
 		Endo sickness strength - "Endo sickness" is a mostly-harmless hediff that makes pawns loopy, but comfortably numb.
-					 It helps keep prey in a good mood, while nerfing endo storage indirectly and adding a bit of fun mental imagery.
-					 Every vore-tick (200 game ticks (about 3 seconds real time)), it will advance in severity for any prey that has been endo-vored.
+					 It helps keep prey in a good mood and heightens healing and immunity speed, while nerfing endo storage indirectly and adding a bit of fun mental imagery.
+					 Every vore-tick (250 game ticks (about 3 seconds real time)), it will advance in severity for any prey that has been endo-vored.
 
 		Endo pacification - When endo sickness reaches 95% severity, pawns can no longer struggle. Hostile pawns are also made prisoners, and hostile animals are rendered factionless.
 
@@ -56,7 +58,7 @@
 		Relationship thoughts - Positive mood boosts for endophilicly holding lovers, bonded animals, or voraphilic pets. Occurs for both predator and prey.
 
 		Endo pets - Gives a predator and prey a special opinion-boosting relationship if they spend the set amount of days together in a single vore stage. Best(or rather, only) done with storage vore.
-			    Prey can only have their one pred, but preds can have multiple prey. They will be upset if something happens to their endo-buddy.
+			    Prey can only have their one pred, but preds can have multiple prey. They will be upset if something happens to their frendo.
 
 		Pets join - If a prey becomes a pet, they'll join your faction. Remember; vore is overpowered. Please show some restraint. Some, you don't have to show much.
 
@@ -118,7 +120,7 @@
 
 
 		Your colony animals trained in predation will endo-capture if they can heal-vore, and cannot fatal-vore. This can be set up with their designations in the vore widget.
-		The designation will give specific warnings if your mod settings prevent endo-capture.
+		The designation will give specific warnings if your mod settings prevent fatal vore or endo-capture.
 
 
 		Devour-designate friendlies - Lets the Devour designator work on downed friendlies. These interactions are forced. Can cause problems.
@@ -132,24 +134,27 @@
 
 	Animal Vore -
 		Playful predation average hours - The hours-on-average an animal trained in playful predation will engage in vore. 24 means they will, for every 24 hours idle, do one nom.
-						  Note that this only counts time idle and awake. Animals following a master won't play-pred while doing so.
+						  Note that this only counts time idle and awake. Animals following a master, forming a caravan or otherwise busy won't play-pred while doing so.
 
 		Playful predation modifier - A percentage on the hours-on-average, multiplied by the number of prey the animal has, added to their average hours.
 					     Lowers how often an animal will play-pred if they have multiple prey already.
 					     (eg: if average hours is 24 and mod is 50%; with 0 prey, 24 hours on average, with 1 prey, 36 hours on average, 2, 48 hours, ect.)
+
+		Playful preyism - Allows animals trained in Playful Predation to request to be prey as well.
 
 		Playful predation colonist chance - The odds that a (humanoid)colonist will be a valid target for play-predding. Odds are for each colonist in range, individualy.
 						    (eg: 2 colonists in range when the check is made; if set to 50%, they both have a 1/2 chance to be a potential play-pred target.)
 						    At 0%, the only animals that should request vore to your colonists should be Voraphile Bonds.
 
 		Indescriminate predation - Animals are only allowed to play-pred members of your colony. This option allows them to nom anyone and anything.
-					   Can lead to problems, like traders getting stuck on the map due to a endo-napped pawn or wild animals tearing down your doors because they got dumped out in the fridge.
+					   Can lead to problems, like traders getting stuck on the map due to a endo-napped pawn or wild animals tearing down your doors because they got dumped out in the workshop.
 
 		Not-so-playful predation - Play predding is endo only. This option disables that.
 
 	Bonds -
-		Bonding is a base game mechanic, occuring rarly when animals and humanoids interact, or when an animal is near their master. 
-		Bonds provide a mood boost and easier training, but both animal and master get upset if something happens to the other.
+		Bonding is a base game mechanic, occuring rarly when animals and humanoids interact, or when an animal is near their master.
+		It's the "easyist" way to tame a thrumbo; down it, then rescue. Every tended wound has a chance to bond and tame.
+		Bonds provide a permanent mood boost and easier training, but both animal and master get upset if something happens to the other.
 
 		Endo bond chance - The chance, per vore-tick, for an animal and a humanoid involved in endo-vore to form a bond. Works on wild animals, and will tame them.
 				   Only animals that can at least be trained to Guard can bond.
@@ -160,6 +165,22 @@
 		Dom-bonding - Endo bonding will only work for non-forced vore, unless this setting is true.
 
 		Voraphile bonds - Makes bonded animals choose their bond for play predding more often, and makes bonds always accept vore proposals.
+
+	Wildlife Proposals -
+		These options can affect preformance, and add quite a bit of chaos.
+
+		Wild predators propose vore - Allows wild predators to propose vore. They'll do so as both predator and prey.
+					      They'll do so, on average, at your maximum setting for vore proposal cooldowns.
+					      Is a little silly when a wolf decides to get long-endo'd by an elk.
+
+		Wild prey propose as prey - Lets wild non-predators propose to predator animals, as prey. Same cooldown applies.
+					    As animals normaly don't have any quirks beyond enablers, what goals they use are entirely random.
+
+		Propose as prey to colonists - Allows wild animals to propose as prey to your colonists and animals.
+					       Is very silly when a wild girros vanishes from your pen and now one of your devil sheep has a belly pet. 
+
+		Propose as pred to colonists - Allows wild animals to propose as predator to your colonists and animals.
+					       It's a proposal, so they can say no. Will make things very chaotic. 
 
 	Cheaty stuff - 
 		Prey recreation - Prey passivly gain recreation need while vored, as long as they don't have one of the negitive prey quirks.
