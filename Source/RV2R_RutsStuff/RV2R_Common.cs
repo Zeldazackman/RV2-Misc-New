@@ -36,6 +36,5 @@ namespace RV2R_RutsStuff
         public static readonly PrisonerInteractionModeDef Fodder = DefDatabase<PrisonerInteractionModeDef>.GetNamedSilentFail("RV2R_Fodder");
 
         public static readonly DesignationDef Devour = DefDatabase<DesignationDef>.GetNamedSilentFail("RV2R_Devour");
-
     }
 }

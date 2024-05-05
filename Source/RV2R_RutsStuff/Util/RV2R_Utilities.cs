@@ -227,6 +227,28 @@ namespace RV2R_RutsStuff
             }
         }
 
+        static public bool IsAttracted(Pawn pawnA, Pawn pawnB)
+        {
+            if (pawnA.story != null && pawnB.story != null)
+            {
+                bool straight = pawnA.gender != pawnB.gender;
+                bool aGay = pawnA.story.traits.HasTrait(TraitDefOf.Gay);
+                bool bGay = pawnB.story.traits.HasTrait(TraitDefOf.Gay);
+                bool aBi = pawnA.story.traits.HasTrait(TraitDefOf.Bisexual);
+                bool bBi = pawnB.story.traits.HasTrait(TraitDefOf.Bisexual);
+                if (straight)
+                    if ((aBi || !aGay) && (bBi || !bGay))
+                        return true;
+
+               else
+                    if ((aBi || aGay) && (bBi || bGay))
+                        return true;
+            }
+
+            return pawnA.GetLoveCluster().Contains(pawnB);
+
+        }
+
         static public bool ShouldBandaid(Pawn pred, Pawn prey) // I'm working on it
         {
             if (pred.genes != null && pred.genes.Xenotype != null)

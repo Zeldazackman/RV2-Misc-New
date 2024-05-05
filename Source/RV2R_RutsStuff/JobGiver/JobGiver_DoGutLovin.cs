@@ -53,7 +53,7 @@ namespace RV2R_RutsStuff
             bool loverPresnt = false;
             bool canLove = false;
             bool noHumanlikes = true;
-            bool noAttraction = true;
+            bool noAttraction = predLib < 1.5f;
 
             IEnumerable<Pawn> familyByBlood = pawn.relations.FamilyByBlood;
             VoreTracker voreTracker = pawnData.VoreTracker;
@@ -72,26 +72,17 @@ namespace RV2R_RutsStuff
                         }
 
                     if (preyPawn.IsColonistPlayerControlled || preyPawn.needs.mood != null)
-                        if (!pawn.IsHumanoid() && RV2_Rut_Settings.rutsStuff.GutLovinSapients)
+                        if (pawn.IsHumanoid() || RV2_Rut_Settings.rutsStuff.GutLovinSapients)
                             noHumanlikes = false;
 
                     if (preyPawn.QuirkManager(false).HasValueModifier("Prey_Libido"))
                         tempPreyLib = preyPawn.QuirkManager(false).ModifyValue("Prey_Libido", tempPreyLib);
 
-                    if (pawn.IsHumanoid() || preyPawn.IsHumanoid())
-                    {
-                        if (noAttraction
-                         && (pawn.story == null
-                         || (pawn.gender != preyPawn.gender || (pawn.story.traits.HasTrait(TraitDefOf.Gay) || pawn.story.traits.HasTrait(TraitDefOf.Bisexual)))
-                         || predLib >= 1.5f))
+                        if (noAttraction && RV2R_Utilities.IsAttracted(pawn, preyPawn))
                             noAttraction = false;
 
-                        if (tempPreyLib < 1.5f
-                         && pawn.story != null
-                         && preyPawn.gender == pawn.gender && !preyPawn.story.traits.HasTrait(TraitDefOf.Gay)
-                         && !preyPawn.story.traits.HasTrait(TraitDefOf.Bisexual))
+                        if (tempPreyLib < 1.5f && !RV2R_Utilities.IsAttracted(preyPawn, pawn))
                             tempPreyLib /= 2f;
-                    }
 
                     bestOp = Math.Max(bestOp, pawn.relations.OpinionOf(voreTrackerRecord.Prey));
 

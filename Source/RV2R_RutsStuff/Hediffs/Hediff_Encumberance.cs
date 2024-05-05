@@ -26,6 +26,8 @@ namespace RV2R_RutsStuff
             {
                 if (RV2_Rut_Settings.rutsStuff.EncumberanceModifier <= 0.0f)
                     return 0f;
+                if (RV2_Rut_Settings.rutsStuff.EncumberanceCap < 0.05f)
+                    return 0f;
                 if (!pawn.IsActivePredator())
                     return 0f;
                 if (pawn.PawnData(false) == null)
