@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
+
   <ThinkTreeDef>
 	<defName>RV2R_AnimalStuff</defName>
 	<insertTag>Animal_PreMain</insertTag>
@@ -32,6 +33,21 @@
                       <li Class="RV2R_RutsStuff.JobGiver_Animal_VoreNearby">
                         <radius>25</radius>
                       </li>
+                    </subNodes>
+				     </li>
+                 </subNodes>
+              </li>
+          </subNodes>
+		  </li>
+        <li Class="ThinkNode_ConditionalOfPlayerFaction">
+		   <invert>true</invert>
+			<subNodes>
+            <li Class="ThinkNode_ConditionalLyingDown">
+		       <invert>true</invert>
+                <subNodes>
+			        <li Class="RV2R_RutsStuff.ThinkNode_AnimalProposeChancePerHour">
+                    <subNodes>
+                      <li Class="RV2R_RutsStuff.JobGiver_Wildlife_ProposeVore"/>
                     </subNodes>
 				     </li>
                  </subNodes>
