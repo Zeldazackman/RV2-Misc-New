@@ -1,0 +1,8 @@
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/RimVore2.RV2StatDef[defName="RV2_Capacity"]/parts</xpath>
+    <value>
+		<li Class="RV2R_RutsStuff.StatPart_VoreCapacityAclimation"/>
+	</value>
+  </Operation>
+</Patch>
