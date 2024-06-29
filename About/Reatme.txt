@@ -15,7 +15,7 @@
 			Allows the animal to vore those you designate to devour. The designation's in the orders tab, and be used on downed hostiles or wildlife/factionless.
 
 		Endo-rescue - 4 steps, moderatly high difficulty, intermediate trainability required, 0.45 size and greater
-			Allows the animal to heal-vore downed colonists and visitors. They'll also heal-vore those who's wounds have already been tended to if they're badly hurt.
+			Allows the animal to heal-vore downed colonists and visitors.
 	
 	These trainables won't do much if the animal can't engage in the proper vore goals.
 	The mod Xenobionic Patcher can allow you to install vore enablers in your animals, among other things.
