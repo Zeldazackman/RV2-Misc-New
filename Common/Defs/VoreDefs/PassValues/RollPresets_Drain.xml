@@ -77,7 +77,7 @@
   </RimVore2.RollPresetDef>
   
   <RimVore2.RollPresetDef ParentName="Digest_StrengthModifiers">
-    <defName>IncreaseNeed_Predator_Food_Limit</defName>
+    <defName>IncreaseNeed_Predator_Food_Limited</defName>
     <strength>0.003~0.01</strength>
     <actionsOnSuccess>
       <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
