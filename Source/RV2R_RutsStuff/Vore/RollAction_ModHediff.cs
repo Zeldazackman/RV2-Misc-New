@@ -20,7 +20,7 @@ namespace RV2R_RutsStuff
                 }
                 else
                 {
-                    BodyPartRecord bodyPartByDef = base.TargetPawn.GetBodyPartByDef(this.partDef);
+                    BodyPartRecord bodyPartByDef = this.partDef != null ? TargetPawn.GetBodyPartByDef(this.partDef) : null;
                     base.TargetPawn.health.AddHediff(hediffDef, bodyPartByDef, null, null);
                 }
                 return true;

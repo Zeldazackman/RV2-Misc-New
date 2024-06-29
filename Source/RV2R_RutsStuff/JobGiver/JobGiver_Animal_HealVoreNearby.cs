@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
+using static RV2R_RutsStuff.Patch_RV2R_Settings;
 
 namespace RV2R_RutsStuff
 {
@@ -41,7 +42,9 @@ namespace RV2R_RutsStuff
                          || pawn3.Downed
                         && (!pawn3.InBed() || (
                            pawn3.health.summaryHealth.SummaryHealthPercent <= 0.65f
-                           && (pawn3.IsAnimal() || (pawn3.IsHumanoid() && !pawn3.health.HasHediffsNeedingTendByPlayer())))
+                           && RV2_Rut_Settings.rutsStuff.AnimalDoctors
+                           && (pawn3.IsAnimal() 
+                           || (pawn3.IsHumanoid() && (!pawn3.health.HasHediffsNeedingTendByPlayer() || HealthUtility.TicksUntilDeathDueToBloodLoss(pawn3) <= 9000))))
                         ))
                         && pawn.CanReserve(pawn3, 1, -1, null, false)
                         && !pawn3.IsForbidden(pawn)

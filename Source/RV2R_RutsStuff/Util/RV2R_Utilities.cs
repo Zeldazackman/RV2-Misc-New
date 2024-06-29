@@ -20,13 +20,10 @@ namespace RV2R_RutsStuff
                 return true;
             if (!pawn.Spawned || !target.Spawned)
                 return true;
-
             if (pawn.Drafted || target.Drafted)
                 return true;
-
             if (pawn.IsBurning() || target.IsBurning())
                 return true;
-
             if (pawn.ShouldBeSlaughtered() || target.ShouldBeSlaughtered())
                 return true;
 
@@ -204,27 +201,19 @@ namespace RV2R_RutsStuff
 
         static public int GetHighestPreySkillLevel(Pawn pawn, SkillDef skill)
         {
-            try
+            int level = 0;
+            PawnData pawnData = pawn.PawnData(false) ?? null;
+            if (pawnData != null && pawn.IsActivePredator())
             {
-                int level = 0;
-                PawnData pawnData = pawn.PawnData(false) ?? null;
-                if (pawnData != null && pawn.IsActivePredator())
-                {
-                    VoreTracker voreTracker = pawnData.VoreTracker;
-                    if (voreTracker != null)
-                        foreach (VoreTrackerRecord voreTrackerRecord in voreTracker.VoreTrackerRecords)
-                        {
-                            if (voreTrackerRecord.Prey.skills?.GetSkill(skill) != null)
-                                level = Math.Max(level, voreTrackerRecord.Prey.skills.GetSkill(skill).levelInt);
-                        }
-                }
-                return level;
+                VoreTracker voreTracker = pawnData.VoreTracker;
+                if (voreTracker != null)
+                    foreach (VoreTrackerRecord voreTrackerRecord in voreTracker.VoreTrackerRecords)
+                    {
+                        if (voreTrackerRecord.Prey.skills?.GetSkill(skill) != null)
+                            level = Math.Max(level, voreTrackerRecord.Prey.skills.GetSkill(skill).levelInt);
+                    }
             }
-            catch (Exception e)
-            {
-                Log.Warning("RV-2R: Something went wrong when trying to get " + pawn.LabelShort + "'s total prey count: " + e);
-                return 0;
-            }
+            return level;
         }
 
         static public bool IsAttracted(Pawn pawnA, Pawn pawnB)
@@ -237,12 +226,13 @@ namespace RV2R_RutsStuff
                 bool aBi = pawnA.story.traits.HasTrait(TraitDefOf.Bisexual);
                 bool bBi = pawnB.story.traits.HasTrait(TraitDefOf.Bisexual);
                 if (straight)
+                {
                     if ((aBi || !aGay) && (bBi || !bGay))
                         return true;
-
-               else
+                }
+                else
                     if ((aBi || aGay) && (bBi || bGay))
-                        return true;
+                    return true;
             }
 
             return pawnA.GetLoveCluster().Contains(pawnB);
@@ -251,12 +241,12 @@ namespace RV2R_RutsStuff
 
         static public bool ShouldBandaid(Pawn pred, Pawn prey) // I'm working on it
         {
-            if (pred.genes != null && pred.genes.Xenotype != null)
+            if (pred.IsHumanoid() && pred.genes != null && pred.genes.Xenotype != null)
             {
                 if (pred.genes.xenotypeName == "basic android" || pred.genes.xenotypeName == "awakened android")
                     return true;
             }
-            if (prey.genes != null && prey.genes.Xenotype != null)
+            if (prey.IsHumanoid() && prey.genes != null && prey.genes.Xenotype != null)
             {
                 if (prey.genes.xenotypeName == "basic android" || prey.genes.xenotypeName == "awakened android")
                     return true;

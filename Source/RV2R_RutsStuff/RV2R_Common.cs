@@ -10,6 +10,9 @@ namespace RV2R_RutsStuff
         public static readonly HediffDef Drained = HediffDef.Named("RV2R_Drained");
         public static readonly HediffDef Encumbrance = HediffDef.Named("RV2R_VoreEncumbrence");
 
+        public static readonly HediffDef CapacityAcclimation = HediffDef.Named("RV2R_CapacityAcclimation");
+        public static readonly HediffDef MovingAcclimation = HediffDef.Named("RV2R_MovementAcclimation");
+
         public static readonly TrainableDef PlayVore = DefDatabase<TrainableDef>.GetNamedSilentFail("PlayVore");
 
         public static readonly JobDef RV2R_GutLovin = DefDatabase<JobDef>.GetNamedSilentFail("RV2R_GutLovin");
@@ -27,6 +30,14 @@ namespace RV2R_RutsStuff
         public static readonly ThoughtDef PreyLovin_Normal = ThoughtDef.Named("RV2R_PreyLovin_Normal");
         public static readonly ThoughtDef PreyLovin_Meh = ThoughtDef.Named("RV2R_PreyLovin_Meh");
         public static readonly ThoughtDef PreyLovin_Bad = ThoughtDef.Named("RV2R_PreyLovin_Bad");
+
+        public static readonly ThoughtDef ActivePred_Normal = ThoughtDef.Named("RV2R_ActivePred");
+        public static readonly ThoughtDef ActivePred_Reluctant = ThoughtDef.Named("RV2R_ActivePred_Reluctant");
+        public static readonly ThoughtDef ActivePred_Vorny = ThoughtDef.Named("RV2R_ActivePred_Vorny");
+
+        public static readonly ThoughtDef ActivePrey_Normal = ThoughtDef.Named("RV2R_ActivePrey");
+        public static readonly ThoughtDef ActivePrey_Reluctant = ThoughtDef.Named("RV2R_ActivePrey_Reluctant");
+        public static readonly ThoughtDef ActivePrey_Vorny = ThoughtDef.Named("RV2R_ActivePrey_Vorny");
 
         public static readonly PawnRelationDef PetPred = DefDatabase<PawnRelationDef>.GetNamedSilentFail("PetPred");
         public static readonly PawnRelationDef PetPrey = DefDatabase<PawnRelationDef>.GetNamedSilentFail("PetPrey");

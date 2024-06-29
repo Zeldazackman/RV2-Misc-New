@@ -20,28 +20,38 @@ namespace RV2R_RutsStuff
             if (__instance.VoreGoal.IsLethal)
                 return;
 
+            if (!__instance.IsOnMap())
+                return;
+
             SettingsContainer_RutsStuff settings = RV2_Rut_Settings.rutsStuff;
 
             try
             {
-                if (RV2_Rut_Settings.rutsStuff.EndoSicknessStrength > 0f)
+                if (settings.PreyCapacityAclimation > 0f
+                 && RV2R_Utilities.GetPreySize(__instance.Predator) / __instance.Predator.CalculateVoreCapacity() >= __instance.Predator.CalculateVoreCapacity() * settings.PreyCapacityAclimationLimit)
+                    HandleAcclimation(__instance);
+
+                if (settings.EndoSicknessStrength > 0f)
                     HandleSickness(__instance);
 
-                if (RV2_Rut_Settings.rutsStuff.EndoPets > 0f
-                 && __instance.CurrentVoreStage.PassedRareTicks >= Math.Floor(GenDate.TicksPerDay / 100 * RV2_Rut_Settings.rutsStuff.EndoPets)
+                if (settings.EndoPets > 0f
+                 && __instance.CurrentVoreStage.PassedRareTicks >= Math.Floor(GenDate.TicksPerDay / 100 * settings.EndoPets)
                  && __instance.Prey.relations.GetDirectRelationsCount(RV2R_Common.PetPrey) == 0)
                     HandlePets(__instance);
 
                 if (__instance.CurrentVoreStage.def.displayPartName == "womb"
-                 && RV2_Rut_Settings.rutsStuff.RegressionStrength > 0f)
+                 && settings.RegressionStrength > 0f)
                     HandleRegression(__instance);
 
-                if (RV2_Rut_Settings.rutsStuff.EndoBondChance > 0.0000f)
+                if (settings.EndoBondChance > 0.0000f)
                     HandleBonding(__instance);
 
-                if (RV2_Rut_Settings.rutsStuff.EndoRecruitment
+                if (settings.EndoRecruitment
                  && (__instance.Prey.IsPrisonerOfColony && __instance.Predator.IsColonistPlayerControlled))
                     HandleImprisoned(__instance);
+
+                if (settings.EndoOpinion && __instance.CurrentVoreStage.PassedRareTicks % 10 == 0)
+                    HandleOpinion(__instance);
 
                 if (__instance.Prey.needs.comfort != null)
                     if (__instance.Predator.QuirkManager(false) == null || !__instance.Predator.QuirkManager(false).HasValueModifier("VoreComfort"))
@@ -49,28 +59,28 @@ namespace RV2R_RutsStuff
                     else if (__instance.Predator.QuirkManager(false).TryGetValueModifier("VoreComfort", ModifierOperation.Multiply, out float comfort))
                         __instance.Prey.needs.comfort.CurLevelPercentage = Math.Min(comfort, __instance.Prey.needs.comfort.CurLevelPercentage + comfort / 20f);
 
-                if (RV2_Rut_Settings.rutsStuff.PreyJoy
+                if (settings.PreyJoy
                  && __instance.Prey.needs.joy != null
                  && (__instance.Prey.QuirkManager(false) == null
                  || __instance.Prey.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Prey, ModifierOperation.Add) >= 0f)
-                 && __instance.Prey.needs.joy.CurLevelPercentage < (__instance.IsForced ? 0.33f : 0.5f))
+                 && __instance.Prey.needs.joy.CurLevelPercentage < (__instance.IsForced ? 0.2f : 0.5f))
                     __instance.Prey.needs.joy.CurLevelPercentage += 0.025f;
 
-                if (RV2_Rut_Settings.rutsStuff.NoBleedOut)
+                if (settings.NoBleedOut)
                 {
                     Hediff bleedOut = __instance.Prey.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss, false);
                     if (bleedOut != null)
                         bleedOut.Severity = Math.Min(bleedOut.Severity, 0.9f);
                 }
 
-                if (RV2_Rut_Settings.rutsStuff.StopBleeding)
+                if (settings.StopBleeding)
                     foreach (Hediff hediff in __instance.Prey.health.hediffSet.hediffs.Where((Hediff diff) => diff.Bleeding))
                     {
-                        hediff.def.injuryProps.bleedRate *= 0.95f;
+                        hediff.def.injuryProps.bleedRate *= 0.985f;
                         __instance.Prey.health.Notify_HediffChanged(hediff);
                     }
 
-                if (RV2_Rut_Settings.rutsStuff.NoBadTemp)
+                if (settings.NoBadTemp)
                 {
                     Hediff hypo = __instance.Prey.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia, false);
                     if (hypo != null)
@@ -86,6 +96,15 @@ namespace RV2R_RutsStuff
                 return;
             }
 
+        }
+
+        private static void HandleAcclimation(VoreTrackerRecord record)
+        {
+            if (!record.Predator.health.hediffSet.HasHediff(RV2R_Common.CapacityAcclimation, false))
+                record.Predator.health.AddHediff(RV2R_Common.CapacityAcclimation, null, null, null);
+
+            float mod = Math.Min(1f, 1f - ((RV2R_Utilities.GetPreySize(record.Predator) / record.Predator.CalculateVoreCapacity()) / RV2_Rut_Settings.rutsStuff.PreyCapacityAclimationLimit));
+            record.Predator.health.hediffSet.GetFirstHediffOfDef(RV2R_Common.CapacityAcclimation, false).Severity += 0.00025f * mod * RV2_Rut_Settings.rutsStuff.PreyCapacityAclimation;
         }
         private static void HandleSickness(VoreTrackerRecord record)
         {
@@ -126,14 +145,15 @@ namespace RV2R_RutsStuff
         {
             if (record.Prey.ageTracker.AgeBiologicalTicks > record.Prey.ageTracker.AdultMinAgeTicks)
             {
-                long age = Math.Min(record.Prey.ageTracker.AgeBiologicalTicks - record.Prey.ageTracker.AdultMinAgeTicks, (long)Math.Ceiling(GenDate.TicksPerDay * RV2_Rut_Settings.rutsStuff.RegressionStrength));
+                long adultAge = (long)record.Prey.RaceProps.lifeStageAges.Last().minAge * GenDate.TicksPerYear;
+                long age = Math.Min(record.Prey.ageTracker.AgeBiologicalTicks - adultAge, (long)Math.Ceiling(GenDate.TicksPerDay * RV2_Rut_Settings.rutsStuff.RegressionStrength));
                 record.Prey.ageTracker.AgeBiologicalTicks -= age;
                 Message message = new Message();
                 if (RV2_Rut_Settings.rutsStuff.ChronicCure)
                 {
                     foreach (Hediff hediff in record.Prey.health.hediffSet.hediffs.Where((Hediff diff) => diff.def.chronic))
                     {
-                        float ratio = record.Prey.ageTracker.AdultMinAgeTicks / record.Prey.ageTracker.AgeBiologicalTicks;
+                        float ratio = adultAge / record.Prey.ageTracker.AgeBiologicalTicks;
                         if (ratio > 0.5f)
                         {
                             if (hediff.TryGetComp<HediffComp_SeverityPerDay>() != null)
@@ -219,13 +239,12 @@ namespace RV2R_RutsStuff
                     {
                         TaggedString taggedString = "MessagePrisonerResistanceBroken".Translate(record.Prey.LabelShort, record.Predator.LabelShort, record.Predator.Named("WARDEN"), record.Prey.Named("PRISONER"));
                         if (record.Prey.guest.interactionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
-                        {
                             taggedString += " " + "RV2R_RecruitAttemptsWillBegin".Translate(record.Predator);
-                        }
+
                         Messages.Message(taggedString, record.Prey, MessageTypeDefOf.PositiveEvent, true);
 
                     }
-                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= Rand.Range(0.00f, 0.01f));
+                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= restistanceLower);
                 }
 #else
             if (!record.IsForced && record.Prey.guest.Recruitable && record.Prey.guest.resistance > 0f)
@@ -237,15 +256,42 @@ namespace RV2R_RutsStuff
                     {
                         TaggedString taggedString = "MessagePrisonerResistanceBroken".Translate(record.Prey.LabelShort, record.Predator.LabelShort, record.Predator.Named("WARDEN"), record.Prey.Named("PRISONER"));
                         if (record.Prey.guest.ExclusiveInteractionMode == PrisonerInteractionModeDefOf.AttemptRecruit)
-                        {
                             taggedString += " " + "RV2R_RecruitAttemptsWillBegin".Translate(record.Predator);
-                        }
+
                         Messages.Message(taggedString, record.Prey, MessageTypeDefOf.PositiveEvent, true);
 
                     }
-                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= Rand.Range(0.00f, 0.01f));
+                    record.Prey.guest.resistance = Math.Max(0.0f, record.Prey.guest.resistance -= restistanceLower);
                 }
 #endif
+        }
+        private static void HandleOpinion(VoreTrackerRecord record)
+        {
+            if (record.Predator.needs.mood != null && record.Predator.needs.mood.thoughts != null)
+            {
+                Thought predThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePred_Normal);
+                if (record.Predator.QuirkManager(false) != null)
+                {
+                    if (record.Predator.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Predator, ModifierOperation.Add) <= -2f)
+                        predThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePred_Reluctant);
+                    else if (record.Predator.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Predator, ModifierOperation.Add) >= 2f)
+                        predThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePred_Vorny);
+                }
+                record.Predator.needs.mood.thoughts.memories.TryGainMemory(predThought.def, record.Prey, null);
+            }
+
+            if (record.Prey.needs.mood != null && record.Prey.needs.mood.thoughts != null)
+            {
+                Thought preyThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePrey_Normal);
+                if (record.Prey.QuirkManager(false) != null)
+                {
+                    if (record.Prey.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Prey, ModifierOperation.Add) <= -2f)
+                        preyThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePrey_Reluctant);
+                    else if (record.Prey.QuirkManager(false).GetTotalSelectorModifier(VoreRole.Prey, ModifierOperation.Add) >= 2f)
+                        preyThought = ThoughtMaker.MakeThought(RV2R_Common.ActivePrey_Vorny);
+                }
+                record.Prey.needs.mood.thoughts.memories.TryGainMemory(preyThought.def, record.Predator, null);
+            }
         }
     }
 }

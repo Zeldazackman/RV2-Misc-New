@@ -37,9 +37,7 @@ namespace RV2R_RutsStuff
                         && !pawn3.IsForbidden(pawn)
                         && !RV2R_Utilities.IsBusy(pawn, pawn3)
                         && pawn3.CanParticipateInVore(out _)
-                        && (pawn3.IsWildAnimal() || (RV2_Rut_Settings.rutsStuff.WildToColonistPrey || RV2_Rut_Settings.rutsStuff.WildToColonistPred))
-                        && (pawn.RaceProps.predator || (pawn3.RaceProps.predator || RV2R_Utilities.IsSapient(pawn3)))
-                        && (pawn.RaceProps.predator || RV2_Rut_Settings.rutsStuff.WildPreyProposals);
+                        && IsValidTarget(pawn, pawn3);
                 }
                 target = (Pawn)GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.Pawn), PathEndMode.OnCell, TraverseParms.For(pawn, Danger.Some, TraverseMode.ByPawn, false, false, false), 30f, predicate, null, 0, -1, false, RegionType.Set_Passable, false);
 
@@ -48,20 +46,14 @@ namespace RV2R_RutsStuff
 
                 List<VoreGoalDef> list = DefDatabase<VoreGoalDef>.AllDefsListForReading.ToList();
 
-                VoreRole role = VoreRole.Invalid;
+                VoreInteraction voreInteraction = VoreInteractionManager.Retrieve(new VoreInteractionRequest(pawn, target, GetVoreRole(pawn), true, false, false, null, null, null, null, list));
 
-                if (RV2_Rut_Settings.rutsStuff.WildPredatorProposals && !pawn.RaceProps.predator)
-                    role = VoreRole.Prey;
-                else if (!RV2_Rut_Settings.rutsStuff.WildToColonistPred)
-                    role = VoreRole.Prey;
-
-                VoreInteraction voreInteraction = VoreInteractionManager.Retrieve(new VoreInteractionRequest(pawn, target, role, true, false, false, null, null, null, null, list));
-                
                 if (voreInteraction.ValidPaths.EnumerableNullOrEmpty<VorePathDef>())
                 {
                     return null;
                 }
 
+                RV2Log.Message("Wild " + pawn.LabelShort + " picking " + target.LabelShort + " for vore proposal", "Jobs");
                 VorePathDef vorePathDef = (voreInteraction.PreferredPath ?? voreInteraction.ValidPaths.RandomElement<VorePathDef>());
                 VoreProposal_TwoWay voreProposal_TwoWay = new VoreProposal_TwoWay(voreInteraction.Predator, voreInteraction.Prey, pawn, target, vorePathDef);
                 VoreJob voreJob = VoreJobMaker.MakeJob(VoreJobDefOf.RV2_ProposeVore, pawn);
@@ -77,6 +69,31 @@ namespace RV2R_RutsStuff
                 Log.Warning("RV-2R: Something went wrong when wild " + pawn.LabelShort + " tried to propose vore: " + e);
                 return null;
             }
+        }
+
+        private bool IsValidTarget(Pawn animal, Pawn target)
+        {
+            if (!target.IsWildAnimal())
+                if (animal.RaceProps.predator)
+                {
+                    if (!RV2_Rut_Settings.rutsStuff.WildToColonistPred
+                     && !(RV2_Rut_Settings.rutsStuff.WildPredatorPreyProposals && RV2_Rut_Settings.rutsStuff.WildToColonistPrey))
+                        return false;
+                }
+                else if (!RV2_Rut_Settings.rutsStuff.WildToColonistPrey)
+                    return false;
+
+            return true;
+        }
+        private VoreRole GetVoreRole(Pawn animal)
+        {
+            if (animal.RaceProps.predator)
+                if (!RV2_Rut_Settings.rutsStuff.WildPredatorPreyProposals)
+                    return VoreRole.Predator;
+                else
+                    return VoreRole.Invalid;
+            else
+                return VoreRole.Prey;
         }
     }
 }

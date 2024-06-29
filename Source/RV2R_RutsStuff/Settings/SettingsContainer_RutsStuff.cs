@@ -48,6 +48,7 @@ namespace RV2R_RutsStuff
         private BoolSmartSetting fodderGuests;
         private BoolSmartSetting fodderColonists;
 
+        private BoolSmartSetting animalDoctors;
         private FloatSmartSetting playVoreChance;
         private FloatSmartSetting playVoreModifier;
         private FloatSmartSetting playVoreColonistBias;
@@ -61,11 +62,20 @@ namespace RV2R_RutsStuff
         private BoolSmartSetting vornyBonds;
 
         //private BoolSmartSetting wildProposals;
+        private FloatSmartSetting wildProposalMod;
         private BoolSmartSetting wildPredatorProposals;
+        private BoolSmartSetting wildPredatorPreyProposals;
         private BoolSmartSetting wildPreyProposals;
         private BoolSmartSetting wildToColonistPrey;
         private BoolSmartSetting wildToColonistPred;
+        private FloatSmartSetting wildTotalVoreLimit;
 
+        private FloatSmartSetting preyCapacityAclimation;
+        private FloatSmartSetting preyCapacityAclimationLimit;
+        private FloatSmartSetting movingCapacityAclimation;
+        private FloatSmartSetting movingCapacityAclimationLimit;
+
+        private BoolSmartSetting endoOpinion;
         private BoolSmartSetting preyJoy;
         private BoolSmartSetting noBleedOut;
         private BoolSmartSetting stopBleeding;
@@ -101,6 +111,7 @@ namespace RV2R_RutsStuff
         public bool GutLovinCheats => this.gutLovinCheats.value;
         public bool GutLovinNonCon => this.gutLovinNonCon.value;
 
+        public bool AnimalDoctors => this.animalDoctors.value;
         public float PlayVoreChance => this.playVoreChance.value;
         public float PlayVoreModifier => this.playVoreModifier.value / 100f;
         public float PlayVoreColonistBias => this.playVoreColonistBias.value / 100f;
@@ -126,11 +137,20 @@ namespace RV2R_RutsStuff
         public bool VornyBonds => this.vornyBonds.value;
 
         //public bool WildProposals => this.wildProposals.value;
+        public float WildProposalMod => this.wildProposalMod.value / 100f;
         public bool WildPredatorProposals => this.wildPredatorProposals.value;
+        public bool WildPredatorPreyProposals => this.wildPredatorPreyProposals.value;
         public bool WildPreyProposals => this.wildPreyProposals.value;
         public bool WildToColonistPrey => this.wildToColonistPrey.value;
         public bool WildToColonistPred => this.wildToColonistPred.value;
+        public int WildTotalVoreLimit => (int)this.wildTotalVoreLimit.value;
 
+        public float PreyCapacityAclimation => this.preyCapacityAclimation.value / 100f;
+        public float PreyCapacityAclimationLimit => this.preyCapacityAclimationLimit.value / 100f;
+        public float MovingCapacityAclimation => this.movingCapacityAclimation.value / 100f;
+        public float MovingCapacityAclimationLimit => this.movingCapacityAclimationLimit.value / 100f;
+
+        public bool EndoOpinion => this.endoOpinion.value;
         public bool PreyJoy => this.preyJoy.value;
         public bool NoBleedOut => this.noBleedOut.value;
         public bool StopBleeding => this.stopBleeding.value;
@@ -192,6 +212,8 @@ namespace RV2R_RutsStuff
             if (this.devourColonistsFull == null || this.devourColonistsFull.IsInvalid())
                 this.devourColonistsFull = new BoolSmartSetting("RV2R_Settings_EndoCaptureDevourColonistsFull", false, false, "RV2R_Settings_EndoCaptureDevourColonistsFull_Tip");
 
+            if (this.animalDoctors == null || this.animalDoctors.IsInvalid())
+                this.animalDoctors = new BoolSmartSetting("RV2R_Settings_AnimalHealVore", true, true, "RV2R_Settings_AnimalHealVore_Tip");
             if (this.playVoreChance == null || this.playVoreChance.IsInvalid())
                 this.playVoreChance = new FloatSmartSetting("RV2R_Settings_AnimalRandomNomChance", 24f, 24f, 6f, 168f, "RV2R_Settings_AnimalRandomNomChance_Tip", "0.0");
             if (this.playVoreModifier == null || this.playVoreModifier.IsInvalid())
@@ -237,15 +259,32 @@ namespace RV2R_RutsStuff
             if (this.vornyBonds == null || this.vornyBonds.IsInvalid())
                 this.vornyBonds = new BoolSmartSetting("RV2R_Settings_VornyBonds", false, false, "RV2R_Settings_VornyBonds_Tip");
 
+            if (this.wildProposalMod == null || this.wildProposalMod.IsInvalid())
+                this.wildProposalMod = new FloatSmartSetting("RV2R_Settings_WildProposalMod", 33f, 33f, 0f, 200f, "RV2R_Settings_WildProposalMod_Tip", "0", "%");
             if (this.wildPredatorProposals == null || this.wildPredatorProposals.IsInvalid())
                 this.wildPredatorProposals = new BoolSmartSetting("RV2R_Settings_WildPredatorProposals", false, false, "RV2R_Settings_WildPredatorProposals_Tip");
+            if (this.wildPredatorPreyProposals == null || this.wildPredatorPreyProposals.IsInvalid())
+                this.wildPredatorPreyProposals = new BoolSmartSetting("RV2R_Settings_WildPredatorPreyProposals", false, false, "RV2R_Settings_WildPredatorPreyProposals_Tip");
             if (this.wildPreyProposals == null || this.wildPreyProposals.IsInvalid())
                 this.wildPreyProposals = new BoolSmartSetting("RV2R_Settings_WildPreyProposals", false, false, "RV2R_Settings_WildPreyProposals_Tip");
             if (this.wildToColonistPrey == null || this.wildToColonistPrey.IsInvalid())
                 this.wildToColonistPrey = new BoolSmartSetting("RV2R_Settings_WildToColonistPrey", false, false, "RV2R_Settings_WildToColonistPrey_Tip");
             if (this.wildToColonistPred == null || this.wildToColonistPred.IsInvalid())
                 this.wildToColonistPred = new BoolSmartSetting("RV2R_Settings_WildToColonistPred", false, false, "RV2R_Settings_WildToColonistPred_Tip");
+            if (this.wildTotalVoreLimit == null || this.wildTotalVoreLimit.IsInvalid())
+                this.wildTotalVoreLimit = new FloatSmartSetting("RV2R_Settings_WildTotalVoreLimit", 25f, 25f, 0f, 100f, "RV2R_Settings_WildTotalVoreLimit_Tip", "0");
 
+            if (this.preyCapacityAclimation == null || this.preyCapacityAclimation.IsInvalid())
+                this.preyCapacityAclimation = new FloatSmartSetting("RV2R_Settings_PreyCapacityAcclimation", 100f, 100f, 0f, 200f, "RV2R_Settings_PreyCapacityAcclimation_Tip", "0", "%");
+            if (this.preyCapacityAclimationLimit == null || this.preyCapacityAclimationLimit.IsInvalid())
+                this.preyCapacityAclimationLimit = new FloatSmartSetting("RV2R_Settings_PreyCapacityAcclimationLimit", 90f, 90f, 1f, 100f, "RV2R_Settings_PreyCapacityAcclimationLimit_Tip", "0", "%");
+            if (this.movingCapacityAclimation == null || this.movingCapacityAclimation.IsInvalid())
+                this.movingCapacityAclimation = new FloatSmartSetting("RV2R_Settings_MovingCapacityAclimation", 100f, 100f, 0f, 200f, "RV2R_Settings_MovingCapacityAclimation_Tip", "0", "%");
+            if (this.movingCapacityAclimationLimit == null || this.movingCapacityAclimationLimit.IsInvalid())
+                this.movingCapacityAclimationLimit = new FloatSmartSetting("RV2R_Settings_MovingCapacityAclimationLimit", 75f, 75f, 1f, 100f, "RV2R_Settings_MovingCapacityAclimationLimit_Tip", "0", "%");
+
+            if (this.endoOpinion == null || this.endoOpinion.IsInvalid())
+                this.endoOpinion = new BoolSmartSetting("RV2R_Cheats_EndoOpinion", true, true, "RV2R_Cheats_EndoOpinion_Tip");
             if (this.preyJoy == null || this.preyJoy.IsInvalid())
                 this.preyJoy = new BoolSmartSetting("RV2R_Cheats_PreyJoy", true, true, "RV2R_Cheats_PreyJoy_Tip");
             if (this.noBleedOut == null || this.noBleedOut.IsInvalid())
@@ -279,6 +318,10 @@ namespace RV2R_RutsStuff
             this.endoPets = null;
             this.endoPetsJoin = null;
             this.endoCapture = null;
+            this.preyCapacityAclimation = null;
+            this.preyCapacityAclimationLimit = null;
+            this.movingCapacityAclimation = null;
+            this.movingCapacityAclimationLimit = null;
             this.preyLovin = null;
             this.gutLovinChance = null;
             this.gutLovinSapients = null;
@@ -308,10 +351,13 @@ namespace RV2R_RutsStuff
             this.fodderColonists = null;
             this.endoBondChance = null;
             this.preyOnlyEndoBond = null;
+            this.wildProposalMod = null;
             this.wildPredatorProposals = null;
+            this.wildPredatorPreyProposals = null;
             this.wildPreyProposals = null;
             this.wildToColonistPrey = null;
             this.wildToColonistPred = null;
+            this.endoOpinion = null;
             this.preyJoy = null;
             this.noBleedOut = null;
             this.stopBleeding = null;
@@ -347,12 +393,20 @@ namespace RV2R_RutsStuff
             this.endoPets.DoSetting(listing_Standard);
             this.endoPetsJoin.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
+            listing_Standard.Label("RV2R_Acclimation_Section".Translate());
+            listing_Standard.Gap(12f);
+            this.preyCapacityAclimation.DoSetting(listing_Standard);
+            this.preyCapacityAclimationLimit.DoSetting(listing_Standard);
+            this.movingCapacityAclimation.DoSetting(listing_Standard);
+            this.movingCapacityAclimationLimit.DoSetting(listing_Standard);
+            listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_Lovin_Section".Translate());
             listing_Standard.Gap(12f);
             this.preyLovin.DoSetting(listing_Standard);
             this.gutLovinChance.DoSetting(listing_Standard);
             this.gutLovinSapients.DoSetting(listing_Standard);
             this.gutLovinStands.DoSetting(listing_Standard);
+            this.gutLovinCheats.DoSetting(listing_Standard);
             this.gutLovinNonCon.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_Capture_Section".Translate());
@@ -368,6 +422,7 @@ namespace RV2R_RutsStuff
             listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_AnimalNom_Section".Translate());
             listing_Standard.Gap(12f);
+            this.animalDoctors.DoSetting(listing_Standard);
             this.playVoreChance.DoSetting(listing_Standard);
             this.playVoreModifier.DoSetting(listing_Standard);
             this.playVorePrey.DoSetting(listing_Standard);
@@ -399,20 +454,22 @@ namespace RV2R_RutsStuff
             listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_Wild_Section".Translate());
             listing_Standard.Gap(12f);
+            this.wildProposalMod.DoSetting(listing_Standard);
             this.wildPredatorProposals.DoSetting(listing_Standard);
+            this.wildPredatorPreyProposals.DoSetting(listing_Standard);
             this.wildPreyProposals.DoSetting(listing_Standard);
             this.wildToColonistPrey.DoSetting(listing_Standard);
             this.wildToColonistPred.DoSetting(listing_Standard);
+            this.wildTotalVoreLimit.DoSetting(listing_Standard);
             listing_Standard.Gap(18f);
             listing_Standard.Label("RV2R_Cheats_Section".Translate());
             listing_Standard.Gap(12f);
+            this.endoOpinion.DoSetting(listing_Standard);
             this.preyJoy.DoSetting(listing_Standard);
             this.noBleedOut.DoSetting(listing_Standard);
             this.stopBleeding.DoSetting(listing_Standard);
             this.noBadTemp.DoSetting(listing_Standard);
             this.curagaVore.DoSetting(listing_Standard);
-            //listing_Standard.Gap(126f);
-            //listing_Standard.Label("RV2R_FuckUnity".Translate());
             listing_Standard.EndScrollView(ref this.height, ref this.heightStale);
         }
         public override void ExposeData()
@@ -432,6 +489,10 @@ namespace RV2R_RutsStuff
             Scribe_Deep.Look<FloatSmartSetting>(ref this.endoPets, "endoPets", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.endoPetsJoin, "endoPetsJoin", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.endoCapture, "endoCapture", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.preyCapacityAclimation, "preyCapacityAclimation", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.preyCapacityAclimationLimit, "preyCapacityAclimationLimit", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.movingCapacityAclimation, "movingCapacityAclimation", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.movingCapacityAclimationLimit, "movingCapacityAclimationLimit", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.preyLovin, "preyLovin", new object[0]);
             Scribe_Deep.Look<FloatSmartSetting>(ref this.gutLovinChance, "gutLovinChance", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.gutLovinSapients, "gutLovinSapients", new object[0]);
@@ -463,10 +524,13 @@ namespace RV2R_RutsStuff
             Scribe_Deep.Look<BoolSmartSetting>(ref this.preyOnlyEndoBond, "preyOnlyEndoBond", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.willingOnlyEndoBond, "willingOnlyEndoBond", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.vornyBonds, "vornyBonds", new object[0]);
+            Scribe_Deep.Look<FloatSmartSetting>(ref this.wildProposalMod, "wildProposalMod", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.wildPredatorProposals, "wildPredatorProposals", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.wildPredatorPreyProposals, "wildPredatorPreyProposals", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.wildPreyProposals, "wildPreyProposals", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.wildToColonistPrey, "wildToColonistPrey", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.wildToColonistPred, "wildToColonistPred", new object[0]);
+            Scribe_Deep.Look<BoolSmartSetting>(ref this.endoOpinion, "endoOpinion", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.preyJoy, "preyJoy", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.noBleedOut, "noBleedOut", new object[0]);
             Scribe_Deep.Look<BoolSmartSetting>(ref this.stopBleeding, "stopBleeding", new object[0]);

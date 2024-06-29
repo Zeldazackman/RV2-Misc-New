@@ -11,14 +11,27 @@ namespace RV2R_RutsStuff
         {
             if (!Pawn.CanParticipateInVore(out _))
                 return -1f;
-            if (!Pawn.RaceProps.predator)
-                if (RV2_Rut_Settings.rutsStuff.WildPredatorProposals && !RV2_Rut_Settings.rutsStuff.WildPreyProposals)
-                    return -1f;
-                else
-                if (!RV2_Rut_Settings.rutsStuff.WildPredatorProposals && RV2_Rut_Settings.rutsStuff.WildPreyProposals)
-                    return -1f;
 
-            return RV2Mod.Settings.fineTuning.MaxVoreProposalCooldown / 2500;
+            if (RV2_Rut_Settings.rutsStuff.WildProposalMod <= 0f)
+                return -1f;
+
+            if (!Pawn.RaceProps.predator)
+            {
+                if (!RV2_Rut_Settings.rutsStuff.WildPreyProposals)
+                    return -1f;
+            }
+            else
+            {
+                if (!RV2_Rut_Settings.rutsStuff.WildPredatorProposals)
+                    return -1f;
+            }
+
+            int mod = 1;
+
+            if (GlobalVoreTrackerUtility.ActiveVoreTrackers.Count > RV2_Rut_Settings.rutsStuff.WildTotalVoreLimit)
+                mod = (GlobalVoreTrackerUtility.ActiveVoreTrackers.Count - RV2_Rut_Settings.rutsStuff.WildTotalVoreLimit);
+
+            return (float)(RV2Mod.Settings.fineTuning.MinVoreProposalCooldown + RV2Mod.Settings.fineTuning.MaxVoreProposalCooldown) / (2500f * mod) / RV2_Rut_Settings.rutsStuff.WildProposalMod;
         }
     }
 }

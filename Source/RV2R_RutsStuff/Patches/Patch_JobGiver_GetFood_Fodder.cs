@@ -148,13 +148,12 @@ namespace RV2R_RutsStuff
                         ;
                     };
 
-                    List<Pawn> nearPawns = pawn.Map.mapPawns.AllPawns.FindAll((Pawn p) => p != pawn
-                                                                                              && baseCheck(p)
-                                                                                              && (prisonCheck(p)
-                                                                                               || ((pawn.IsColonistPlayerControlled || RV2_Rut_Settings.rutsStuff.FodderAnimalsFull)
-                                                                                                &&
-                                                                                                (animalCheck(p)
-                                                                                               || humanoidCheck(p)))));
+                    List<Pawn> nearPawns = pawn.Map.mapPawns.AllPawns.FindAll((Pawn p) =>
+                        p != pawn
+                     && baseCheck(p)
+                     && (prisonCheck(p)
+                      || ((pawn.IsColonistPlayerControlled || RV2_Rut_Settings.rutsStuff.FodderAnimalsFull)
+                        && (animalCheck(p) || humanoidCheck(p)))));
 
                     if (nearPawns.NullOrEmpty())
                         return;

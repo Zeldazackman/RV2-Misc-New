@@ -52,7 +52,7 @@ namespace RV2R_RutsStuff
 
             bool loverPresnt = false;
             bool canLove = false;
-            bool noHumanlikes = true;
+            bool harknessTest = false;
             bool noAttraction = predLib < 1.5f;
 
             IEnumerable<Pawn> familyByBlood = pawn.relations.FamilyByBlood;
@@ -71,18 +71,18 @@ namespace RV2R_RutsStuff
                             break;
                         }
 
-                    if (preyPawn.IsColonistPlayerControlled || preyPawn.needs.mood != null)
+                    if (RV2R_Utilities.IsSapient(preyPawn))
                         if (pawn.IsHumanoid() || RV2_Rut_Settings.rutsStuff.GutLovinSapients)
-                            noHumanlikes = false;
+                            harknessTest = true;
 
                     if (preyPawn.QuirkManager(false).HasValueModifier("Prey_Libido"))
                         tempPreyLib = preyPawn.QuirkManager(false).ModifyValue("Prey_Libido", tempPreyLib);
 
-                        if (noAttraction && RV2R_Utilities.IsAttracted(pawn, preyPawn))
-                            noAttraction = false;
+                    if (RV2R_Utilities.IsAttracted(pawn, preyPawn))
+                        noAttraction = false;
 
-                        if (tempPreyLib < 1.5f && !RV2R_Utilities.IsAttracted(preyPawn, pawn))
-                            tempPreyLib /= 2f;
+                    if (tempPreyLib < 1.5f && !RV2R_Utilities.IsAttracted(preyPawn, pawn))
+                        tempPreyLib /= 2f;
 
                     bestOp = Math.Max(bestOp, pawn.relations.OpinionOf(voreTrackerRecord.Prey));
 
@@ -101,13 +101,14 @@ namespace RV2R_RutsStuff
                       && (pawn.story.traits.HasTrait(TraitDefOf.Psychopath)
                        || bestOp <= -10));
 
-            if (noHumanlikes)
+            if (!harknessTest)
                 return null;        // If we're not being a barn
 
             if (!pyscho && !canLove)
                 return null;        // And -someone- in there wants it (or we don't care)
 
-            if (!loverPresnt && !(LovePartnerRelationUtility.ExistingLovePartner(pawn, false) == null && RV2_Rut_Settings.rutsStuff.GutLovinStands))
+            if (!(loverPresnt || RV2_Rut_Settings.rutsStuff.GutLovinCheats)
+              && !(LovePartnerRelationUtility.ExistingLovePartner(pawn, false) == null && RV2_Rut_Settings.rutsStuff.GutLovinStands))
                 return null;        // And we're romanticly involved (or don't care)
 
             if (Rand.Chance(pyscho ? predLib : ((predLib + preyLib) / 2f)))  // And we're in the mood
