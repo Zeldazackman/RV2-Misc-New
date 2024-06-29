@@ -42,6 +42,16 @@
 		This can cause problems if, for instance, a pawn of yours has 15 muffalo stored in their stomach. RV2 only counts the first 4; this submod counts them all.
 		To revert, set encumbrance multiplier to 0% and remove Patches/Patch_Hediffs_Vore_CapmodRemoval.xml from this submod's Common folder(RV2_Misc/Common/Patches/Patch_Hediffs_Vore_CapmodRemoval.xml).
 
+	Acclimation -
+		Capacity acclimation - Allows predators stuffed to the brim to slowly gain more capacity for prey. Allows pawns to slowly and organicaly overcome small bodysizes or poor quirks, or to tackle larger prey.
+
+		Capacity acclimation limit - How full, as a percentage, a predator needs to be to gain vore capacity. Capacity gains are faster the fuller one is, with it slowing as a pred's "fullness percentage" falls to this number.
+
+		Moving acclimation - Allows predators encumbered by the weight of prey to slowly lose movement penalties. As moving reduction is based on hediff stages, changes can take some time to be noticable. 
+				     No effect if encumberance has been reverted.
+
+		Moving acclimation limit - How severe the "weighed down" hediff needs to be to gain moving acclimation. Slows the same way that capacity acclimation does.
+
 	Endo Stuff -
 		Endo sickness strength - "Endo sickness" is a mostly-harmless hediff that makes pawns loopy, but comfortably numb.
 					 It helps keep prey in a good mood and heightens healing and immunity speed, while nerfing endo storage indirectly and adding a bit of fun mental imagery.
@@ -71,8 +81,11 @@
 
 		Sapient creatures allowed - Lets anthing that can give informed consent get and give gut lovin'.
 					    You'll need a mod like Sentiant Animals or PawnMorpher for this to do anything.
-
+		
 		One-nom-stands - Allows predators without a lover to gut love prey.
+
+		Vorny flings - Allows predators to gut love even if their lover isn't involved.
+			       Has no other or negitive effects, but it can end up looking really awkward for the pred.
 
 		Allow non-con - Allows for psycopathic or low opinion predators to gut love prey that don't want it.
 			        Will absolutly destroy relationships.
@@ -133,6 +146,9 @@
 							Mostly a meme/"screw it, eat them" option. Animals will use random endo goals if fatal's disabled and the prey's not hurt.
 
 	Animal Vore -
+		Opportunistic healing - Allows your animals trained in Endo-Rescue to proactivly heal-vore wounded patients.
+					They'll wait for their wounds to be tended to first, or until they're about to bleed out.
+
 		Playful predation average hours - The hours-on-average an animal trained in playful predation will engage in vore. 24 means they will, for every 24 hours idle, do one nom.
 						  Note that this only counts time idle and awake. Animals following a master, forming a caravan or otherwise busy won't play-pred while doing so.
 
@@ -169,9 +185,11 @@
 	Wildlife Proposals -
 		These options can affect preformance, and add quite a bit of chaos.
 
-		Wild predators propose vore - Allows wild predators to propose vore. They'll do so as both predator and prey.
-					      They'll do so, on average, at your maximum setting for vore proposal cooldowns.
-					      Is a little silly when a wolf decides to get long-endo'd by an elk.
+		Wild proposal rate - How often wildlife propose vore, based on at your maximum setting for vore proposal cooldowns.
+
+		Wild predators propose vore - Allows wild predators to propose vore.
+
+		Wild predators are switches - Allows wild predators to propose vore as prey.
 
 		Wild prey propose as prey - Lets wild non-predators propose to predator animals, as prey. Same cooldown applies.
 					    As animals normaly don't have any quirks beyond enablers, what goals they use are entirely random.
@@ -182,9 +200,14 @@
 		Propose as pred to colonists - Allows wild animals to propose as predator to your colonists and animals.
 					       It's a proposal, so they can say no. Will make things very chaotic. 
 
+		Total vore limit - How much vore can be going on before limiting wild proposals. Even if the limit's hit, proposals can still happen, they'll just be much rarer.
+
 	Cheaty stuff - 
+		Passive opinions - Predators and their prey slowly gain opinion-boosting thoughts of each other.
+				   How much they gain is based on their willingness for the roll, ranging from +5 to +20.
+		
 		Prey recreation - Prey passivly gain recreation need while vored, as long as they don't have one of the negitive prey quirks.
-      				  They build up to 50% if willing, and 33% otherwise.
+      				  They build up to 50% if willing, and 25% otherwise.
 
 		No bleed out - Caps the Bloodloss hediff to 90%. Prey can still be killed by it indirectly, due to it lowering consciousness. Great for healing vore.
 
