@@ -31,7 +31,7 @@ namespace RV2R_RutsStuff
             if (GlobalVoreTrackerUtility.ActiveVoreTrackers.Count > RV2_Rut_Settings.rutsStuff.WildTotalVoreLimit)
                 mod = (GlobalVoreTrackerUtility.ActiveVoreTrackers.Count - RV2_Rut_Settings.rutsStuff.WildTotalVoreLimit);
 
-            return (float)(RV2Mod.Settings.fineTuning.MinVoreProposalCooldown + RV2Mod.Settings.fineTuning.MaxVoreProposalCooldown) / (2500f * mod) / RV2_Rut_Settings.rutsStuff.WildProposalMod;
+            return (float)((RV2Mod.Settings.fineTuning.MinVoreProposalCooldown + RV2Mod.Settings.fineTuning.MaxVoreProposalCooldown) * mod) / 2500f / RV2_Rut_Settings.rutsStuff.WildProposalMod;
         }
     }
 }
