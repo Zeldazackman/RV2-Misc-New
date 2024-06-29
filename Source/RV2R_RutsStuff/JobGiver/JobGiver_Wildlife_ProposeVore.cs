@@ -1,4 +1,4 @@
-﻿using RimVore2;
+using RimVore2;
 using RimWorld;
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ namespace RV2R_RutsStuff
 
                 List<VoreGoalDef> list = DefDatabase<VoreGoalDef>.AllDefsListForReading.ToList();
 
-                VoreInteraction voreInteraction = VoreInteractionManager.Retrieve(new VoreInteractionRequest(pawn, target, GetVoreRole(pawn), true, false, false, null, null, null, null, list));
+                VoreInteraction voreInteraction = VoreInteractionManager.Retrieve(new VoreInteractionRequest(pawn, target, GetVoreRole(pawn, target), true, false, false, null, null, null, null, list));
 
                 if (voreInteraction.ValidPaths.EnumerableNullOrEmpty<VorePathDef>())
                 {
@@ -85,10 +85,12 @@ namespace RV2R_RutsStuff
 
             return true;
         }
-        private VoreRole GetVoreRole(Pawn animal)
+        private VoreRole GetVoreRole(Pawn animal, Pawn target)
         {
             if (animal.RaceProps.predator)
-                if (!RV2_Rut_Settings.rutsStuff.WildPredatorPreyProposals)
+                if (!target.IsWildAnimal() && !RV2_Rut_Settings.rutsStuff.WildToColonistPred)
+                    return VoreRole.Prey;
+                else if (!RV2_Rut_Settings.rutsStuff.WildPredatorPreyProposals)
                     return VoreRole.Predator;
                 else
                     return VoreRole.Invalid;
