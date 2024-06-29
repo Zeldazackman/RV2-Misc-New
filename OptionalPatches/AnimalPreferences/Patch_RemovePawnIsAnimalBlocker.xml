@@ -1,0 +1,5 @@
+<Patch>
+  <Operation Class="PatchOperationRemove">
+    <xpath>Defs/RimVore2.QuirkPoolDef[*]//blockingKeywords["PawnIsAnimal"]</xpath>
+  </Operation>
+</Patch>

@@ -1,0 +1,5 @@
+These patches are fully optional. If you want them, just move them into the Common/Patches folder.
+
+The moving patch reduces the benefits/penalties in the moving quirks, making Belly acrobats and Belly-dysfunctional pawns have less extreme moving modifiers.
+
+The animal preferences patch removes all instances of PawnIsAnimal from quirk pool blockers, allowing animals to have prefered goals and types. May affect performance.

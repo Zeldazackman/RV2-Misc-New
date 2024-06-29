@@ -1,0 +1,32 @@
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/RimVore2.QuirkDef[contains(.,"Mobility")]//modifierValue[text()=0.1]</xpath>
+    <value>
+      <modifierValue>0.33</modifierValue>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/RimVore2.QuirkDef[contains(.,"Mobility")]//modifierValue[text()=0.5]</xpath>
+    <value>
+      <modifierValue>0.66</modifierValue>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/RimVore2.QuirkDef[contains(.,"Mobility")]//modifierValue[text()=1.5]</xpath>
+    <value>
+      <modifierValue>1.33</modifierValue>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/RimVore2.QuirkDef[contains(.,"Mobility")]//modifierValue[text()=2]</xpath>
+    <value>
+      <modifierValue>1.66</modifierValue>
+    </value>
+  </Operation>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/RimVore2.QuirkDef[contains(.,"Mobility")]//modifierValue[text()=2.5]</xpath>
+    <value>
+      <modifierValue>2</modifierValue>
+    </value>
+  </Operation>
+</Patch>
