@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <RimVore2.QuirkPoolDef>
+    <defName>RVR2_SpecialFlags</defName>
+    <label>Specials</label>
+    <category>General</category>
+    <description>These quirks are special, rare quirks that provide secondary abilities, benifits or chalenges. Some can be added via crafted enablers.</description>
+    <generationOrder>9</generationOrder>
+    <poolType>RollForEach</poolType>
+    <quirks>
+      <li>Special_PredBreaker</li>
+      <li>Special_PreyBreaker</li>
+      <li>Special_Greedy</li>
+      <li>Special_Submissive</li>
+      <li>Special_Aphrodisiac</li>
+      <li>Special_Siren</li>
+      <li>Special_Vicious</li>
+      <li>Special_Regression</li>
+      <li>Special_Feeder</li>
+      <li>Special_Hypnoguts</li>
+      <li>Special_CutePred</li>
+      <li>Special_Psychurn</li>
+    </quirks>
+    <blockingKeywords>
+      <li>PawnIsAnimal</li>
+    </blockingKeywords>
+  </RimVore2.QuirkPoolDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_PredBreaker</defName>
+    <label>Munchies</label>
+    <description>Occasionaly, [PAWN_label] will get the most uncontrolable cases of the munchies.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>MentalBreaker_Pred</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_PreyBreaker</defName>
+    <label>Anxious</label>
+    <description>Ever get that feeling that you just need to hide? [PAWN_label] gets it bad.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>MentalBreaker_Prey</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Greedy</defName>
+    <label>Greedy</label>
+    <description>As far as [PAWN_label]'s concerned, once you're prey, you're prey for good.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>NoEject_Pred</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Submissive</defName>
+    <label>Submissive</label>
+    <description>As far as [PAWN_label]'s concerned, once they're prey, they're prey for good.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>NoEject_Prey</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Aphrodisiac</defName>
+    <label>Living aphrodisiac</label>
+    <description>There's just... something... about how... [PAWN_label]... f-feeels inss-aahh~...</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>Aphrodisiac</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Siren</defName>
+    <label>Siren</label>
+    <description>[PAWN_label] knows how to make getting devoured whole and alive look good- good enough to drop your guns and walk right in.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>OnVore_Feed</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Vicious</defName>
+    <label>Vicious</label>
+    <description>[PAWN_label] knows how to pull off the "you're a slab of meat and I'm a starved wolf" look while devouring prey, an act that can demoralize the snack's nearby friends.</description>
+    <rarity>VeryRare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>OnVore_Panic</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Regression</defName>
+    <label>Regressive enzymes</label>
+    <description>[PAWN_label]'s womb produces a potent mix of stem-cell-like enzymes, allowing for the regression of age for their prey.</description>
+    <rarity>Rare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>AgeRegression</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Feeder</defName>
+    <label>Nutrious sweat</label>
+    <description>[PAWN_label]'s skin oils are unusualy dense in nutrents, allowing them to passivly offset their predator's need for food.</description>
+    <rarity>Rare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>PreyFeeder</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Hypnoguts</defName>
+    <label>Hypnoguts</label>
+    <description>The ways [PAWN_label]'s innards grind and churn do things to their prey's minds, leaving them in a conceringly good mood.</description>
+    <rarity>Rare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>Hypnoguts</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_CutePred</defName>
+    <label>Pulls the look</label>
+    <description>Everyone can agree; [PAWN_label] pulls the pred look off perfectly.</description>
+    <rarity>Rare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>BeautyWhenFull</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+  <RimVore2.QuirkDef>
+    <defName>Special_Psychurn</defName>
+    <label>Psychurner</label>
+    <description>[PAWN_label] can psyonicaly link with their prey, using them to boost any psyonic powers they may have.</description>
+    <rarity>Rare</rarity>
+    <comps>
+      <li Class="RimVore2.QuirkComp_SpecialFlag">
+        <flag>Psychurn</flag>
+      </li>
+    </comps>
+  </RimVore2.QuirkDef>
+  
+</Defs>

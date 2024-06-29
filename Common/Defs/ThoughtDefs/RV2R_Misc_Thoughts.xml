@@ -281,4 +281,96 @@
     </stages>
   </ThoughtDef>
   
+  
+  <ThoughtDef Name="RV2R_ActivePredThought_Base" Abstract="true">
+    <validWhileDespawned>true</validWhileDespawned>
+    <showBubble>false</showBubble>
+  </ThoughtDef>
+
+
+  <ThoughtDef>
+    <defName>RV2R_ActivePred_Reluctant</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>5</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>in me</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>RV2R_ActivePred</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>10</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>in me</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>RV2R_ActivePred_Vorny</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>20</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>mine</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  
+  <ThoughtDef>
+    <defName>RV2R_ActivePrey_Reluctant</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>5</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>ate me</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>RV2R_ActivePrey</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>10</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>ate me</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>RV2R_ActivePrey_Vorny</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>2</durationDays>
+    <stackLimit>300</stackLimit>
+	<stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stackLimitForSameOtherPawn>20</stackLimitForSameOtherPawn>
+    <stages>
+      <li>
+        <labelSocial>devoured me</labelSocial>
+        <baseOpinionOffset>1</baseOpinionOffset>
+      </li>
+    </stages>
+  </ThoughtDef>
 </Defs>

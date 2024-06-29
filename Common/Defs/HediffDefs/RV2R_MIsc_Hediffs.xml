@@ -566,4 +566,39 @@
     <description>This pawn is passing someone through their guts, towards the anus, while passivily draining them for nourishment.</description>
   </HediffDef>
   
+  
+  <HediffDef>
+    <defName>RV2R_CapacityAcclimation</defName>
+    <label>capacity aclimation</label>
+    <hediffClass>RV2R_RutsStuff.Hediff_Acclimation</hediffClass>
+    <description>Aclimation and adaptation gained from holding nearly or at one's limit for prey.</description>
+    <initialSeverity>0.001</initialSeverity>
+    <maxSeverity>100.00</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <priceImpact>false</priceImpact>
+    <stages>
+      <li>
+        <label>.</label>
+      </li>
+    </stages>
+  </HediffDef>
+  
+  <HediffDef>
+    <defName>RV2R_MovementAcclimation</defName>
+    <label>movement aclimation</label>
+    <hediffClass>RV2R_RutsStuff.Hediff_Acclimation</hediffClass>
+    <description>Aclimation and adaptation gained from holding nearly or at one's limit for prey.</description>
+    <initialSeverity>0.001</initialSeverity>
+    <maxSeverity>100.00</maxSeverity>
+    <isBad>false</isBad>
+    <tendable>false</tendable>
+    <priceImpact>false</priceImpact>
+    <stages>
+      <li>
+        <label>.</label>
+      </li>
+    </stages>
+  </HediffDef>
+	
 </Defs>

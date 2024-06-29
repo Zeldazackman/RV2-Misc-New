@@ -2,6 +2,7 @@
 <Defs>
   <RimVore2.VorePathDef Abstract="True" Name="Drain_Base">
     <voreGoal>RV2R_Drain</voreGoal>
+    <feedsPredator>true</feedsPredator>
   </RimVore2.VorePathDef>
 
   <!-- Essential Paths -->

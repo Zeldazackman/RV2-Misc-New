@@ -101,7 +101,7 @@
         <li>Sound_Gurgle_Chance_5</li>
         <li>Sound_Burp_Chance_15</li>
         <li>IncreaseDigestionProgress_Slow</li>
-        <li>IncreaseNeed_Predator_Food</li>
+        <li>IncreaseNeed_Predator_Food_Limited</li>
         <li>IncreaseNeed_Prey_Food</li>
       </rollPresets>
     </onCycle>

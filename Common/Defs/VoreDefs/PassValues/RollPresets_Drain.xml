@@ -42,9 +42,10 @@
     <defName>ConvertNutritionToPredatorFood_Slow</defName>
     <strength>0.0033~0.01</strength>
     <actionsOnSuccess>
-      <li Class="RimVore2.RollAction_IncreaseNeed">
+      <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
         <target>Predator</target>
         <need>Food</need>
+		<limit>0.75</limit>
       </li>
       <li Class="RimVore2.RollAction_PassValue_Subtract">
         <name>PreyNutrition</name>
@@ -55,7 +56,7 @@
   
   <RimVore2.RollPresetDef>
     <defName>IncreaseNeed_Predator_Food_Instant</defName>
-    <strength>0.2~0.35</strength>
+    <strength>0.15~0.25</strength>
     <strengthModifiers>
       <li Class="RimVore2.RollModifier_SizeDifference">
         <pawn>Predator</pawn>
@@ -67,9 +68,22 @@
       </li>
     </strengthModifiers>
     <actionsOnSuccess>
-      <li Class="RimVore2.RollAction_IncreaseNeed">
+      <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
         <target>Predator</target>
         <need>Food</need>
+		<limit>0.75</limit>
+      </li>
+    </actionsOnSuccess>
+  </RimVore2.RollPresetDef>
+  
+  <RimVore2.RollPresetDef ParentName="Digest_StrengthModifiers">
+    <defName>IncreaseNeed_Predator_Food_Limit</defName>
+    <strength>0.003~0.01</strength>
+    <actionsOnSuccess>
+      <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
+        <target>Predator</target>
+        <need>Food</need>
+		<limit>0.75</limit>
       </li>
     </actionsOnSuccess>
   </RimVore2.RollPresetDef>
@@ -78,9 +92,10 @@
     <defName>IncreaseNeed_Predator_Food_Lesser</defName>
     <strength>0.0025~0.0055</strength>
     <actionsOnSuccess>
-      <li Class="RimVore2.RollAction_IncreaseNeed">
+      <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
         <target>Predator</target>
         <need>Food</need>
+		<limit>0.75</limit>
       </li>
     </actionsOnSuccess>
   </RimVore2.RollPresetDef>
@@ -92,9 +107,10 @@
       <li Class="RimVore2.RollModifier_VoreSpeed"></li>
     </strengthModifiers>
     <actionsOnSuccess>
-      <li Class="RimVore2.RollAction_IncreaseNeed">
+      <li Class="RV2R_RutsStuff.RollAction_IncreaseNeedLimited">
         <target>Prey</target>
         <need>Food</need>
+		<limit>0.5</limit>
       </li>
     </actionsOnSuccess>
   </RimVore2.RollPresetDef>
